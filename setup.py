@@ -5,7 +5,7 @@ import pathlib
 from setuptools import setup, Extension, dist
 
 # SESD information
-from SESD import __title__, __version__
+from SESD import __name__, __version__
 
 # Prepare reqs from requirements.txt
 with open("requirements.txt") as f:
@@ -38,7 +38,7 @@ _SESD = Extension(
 
 # Setup
 setup(
-    name=__title__,
+    name=__name__,
     version=__version__,
     description="A Python package to detect residues that compose the solvent-exposed surface of a target biomolecule.",
     # This is an optional longer description of your project that represents
