@@ -14,6 +14,8 @@
 * sincos[3] = cos b  *
 *********************/
 
+/* Grid initialization */
+
 /*
  * Function: igrid
  * ---------------
@@ -228,24 +230,19 @@ void ses(int *grid, int nx, int ny, int nz, double step, double probe, int nthre
  */
 int define_surface_points(int *grid, int nx, int ny, int nz, int i, int j, int k)
 {
-    if (i - 1 >= 0)
-        if (grid[k + nz * (j + (ny * (i - 1)))] == 0)
-            return grid[k + nz * (j + (ny * i))];
-    if (i + 1 < nx)
-        if (grid[k + nz * (j + (ny * (i + 1)))] == 0)
-            return grid[k + nz * (j + (ny * i))];
-    if (j - 1 >= 0)
-        if (grid[k + nz * ((j - 1) + (ny * i))] == 0)
-            return grid[k + nz * (j + (ny * i))];
-    if (j + 1 < ny)
-        if (grid[k + nz * ((j + 1) + (ny * i))] == 0)
-            return grid[k + nz * (j + (ny * i))];
-    if (k - 1 >= 0)
-        if (grid[(k - 1) + nz * (j + (ny * i))] == 0)
-            return grid[k + nz * (j + (ny * i))];
-    if (k + 1 < nz)
-        if (grid[(k + 1) + nz * (j + (ny * i))] == 0)
-            return grid[k + nz * (j + (ny * i))];
+    int x, y, z;
+
+    // Loop around neighboring points
+    for (x = i - 1; x <= i + 1; x++)
+        for (y = j - 1; y <= j + 1; y++)
+            for (z = k - 1; z <= k + 1; z++)
+            {
+                // Check if point is inside 3D grid
+                if (x < 0 || y < 0 || z < 0 || x > nx - 1 || y > ny - 1 || z > nz - 1)
+                    ;
+                else if (grid[z + nz * (y + (ny * x))] == 0)
+                    return 1;
+            }
 
     return -1;
 }
@@ -281,16 +278,14 @@ void filter_surface(int *grid, int nx, int ny, int nz, int nthreads)
                     if (grid[k + nz * (j + (ny * i))])
                         // Define surface cavity points
                         grid[k + nz * (j + (ny * i))] = define_surface_points(grid, nx, ny, nz, i, j, k);
-                    else
-                        grid[k + nz * (j + (ny * i))] = -1;
     }
 }
 
 /*
- * Function: detect
- * ----------------
+ * Function: _surface
+ * ------------------
  * 
- * Detect solvent-exposed surface
+ * Define solvent-exposed surface from a target biomolecule
  * 
  * grid: 3D grid
  * nx: x grid units
@@ -309,7 +304,7 @@ void filter_surface(int *grid, int nx, int ny, int nz, int nthreads)
  * nthreads: number of threads for OpenMP
  * verbose: print extra information to standard output
  */
-void detect(int *grid, int size, int nx, int ny, int nz, double *atoms, int natoms, int xyzr, double *reference, int ndims, double *sincos, int nvalues, double step, double probe, int is_ses, int nthreads, int verbose)
+void _surface(int *grid, int size, int nx, int ny, int nz, double *atoms, int natoms, int xyzr, double *reference, int ndims, double *sincos, int nvalues, double step, double probe, int is_ses, int nthreads, int verbose)
 {
 
     if (verbose)
@@ -317,7 +312,6 @@ void detect(int *grid, int size, int nx, int ny, int nz, double *atoms, int nato
             fprintf(stdout, "> Adjusting SAS surface\n");
     igrid(grid, size);
     fill(grid, nx, ny, nz, atoms, natoms, xyzr, reference, ndims, sincos, nvalues, step, probe, nthreads);
-
 
     if (is_ses)
     {
@@ -329,5 +323,212 @@ void detect(int *grid, int size, int nx, int ny, int nz, double *atoms, int nato
     if (verbose)
         fprintf(stdout, "> Defining surface points\n");
     filter_surface(grid, nx, ny, nz, nthreads);
+}
 
+/* Retrieve interface residues */
+
+/*
+ * Struct: node
+ * ------------
+ * 
+ * A linked list node for atom index in xyzr array
+ * 
+ * pos: atom index in xyzr array (coordinates and radii of pdb)
+ * struct node* next: pointer to next linked list node
+ *  
+ */
+typedef struct node
+{
+    int pos;
+    struct node *next;
+} res;
+
+/*
+ * Function: create
+ * ----------------
+ * 
+ * Create a res node
+ * 
+ * pos: atom index in xyzr array (coordinates and radii of pdb)
+ * 
+ * returns: res node with atom index
+ */
+res *create(int pos)
+{
+    res *new = (res *)malloc(sizeof(res));
+
+    new->pos = pos;
+    new->next = NULL;
+
+    return new;
+}
+
+/*
+ * Function: insert
+ * ----------------
+ * 
+ * Insert res node in linked list
+ * 
+ * res: pointer to linked list head
+ * new: res node
+ * 
+ */
+void insert(res **head, res *res_new)
+{
+    res *current;
+
+    if (*head == NULL || (*head)->pos >= res_new->pos)
+    {
+        res_new->next = *head;
+        *head = res_new;
+    }
+    else
+    {
+        current = *head;
+        while (current->next != NULL && current->next->pos < res_new->pos)
+        {
+            current = current->next;
+        }
+        res_new->next = current->next;
+        current->next = res_new;
+    }
+}
+
+/*
+ * Function: _interface
+ * --------------------
+ * 
+ * Retrieve interface residues from solvent-exposed surface
+ * 
+ * cavities: cavities 3D grid
+ * nx: x grid units
+ * ny: y grid units
+ * nz: z grid units
+ * pdb: 1D-array of residues information (resnum_chain)
+ * atoms: xyz coordinates and radii of input pdb
+ * natoms: number of atoms
+ * xyzr: number of data per atom (4: xyzr)
+ * reference: xyz coordinates of 3D grid origin
+ * ndims: number of coordinates (3: xyz)
+ * sincos: sin and cos of 3D grid angles
+ * nvalues: number of sin and cos (sina, cosa, sinb, cosb)
+ * step: 3D grid spacing (A)
+ * probe_in: Probe In size (A)
+ * ncav: number of cavities
+ * nthreads: number of threads for OpenMP
+ * 
+ * returns: array of strings with interface residues
+ */
+char
+    **
+    _interface(int *grid, int nx, int ny, int nz, char **pdb, double *atoms, int natoms, int xyzr, double *reference, int ndims, double *sincos, int nvalues, double step, double probe, int nthreads, int verbose)
+{
+    int i, j, k, atom, count = 0, old_atom = -1;
+    double x, y, z, xaux, yaux, zaux, distance, H;
+    char **residues;
+
+    if (verbose)
+        fprintf(stdout, "> Retrieving interface residues\n");
+
+    // Allocate memory for reslist structure
+    res *reslist, *new_res;
+
+    // Initialize linked list
+    reslist = NULL;
+
+    // Iterate through the list of atoms
+    for (atom = 0; atom < natoms; atom++)
+    {
+        // Convert atom coordinates in 3D grid coordinates
+        x = (atoms[atom * 4] - reference[0]) / step;
+        y = (atoms[1 + (atom * 4)] - reference[1]) / step;
+        z = (atoms[2 + (atom * 4)] - reference[2]) / step;
+
+        xaux = x * sincos[3] + z * sincos[2];
+        yaux = y;
+        zaux = (-x) * sincos[2] + z * sincos[3];
+
+        x = xaux;
+        y = yaux * sincos[1] - zaux * sincos[0];
+        z = yaux * sincos[0] + zaux * sincos[1];
+
+        // Create a radius (H) for space occupied by probe and atom
+        H = (probe + atoms[3 + (atom * 4)]) / step;
+
+        // Loop around radius from atom center
+        for (i = floor(x - H); i <= ceil(x + H); i++)
+            for (j = floor(y - H); j <= ceil(y + H); j++)
+                for (k = floor(z - H); k <= ceil(z + H); k++)
+                {
+                    if (i < nx && i > 0 && j < ny && j > 0 && k < nz && k > 0)
+                        if (grid[k + nz * (j + (ny * i))])
+                        {
+                            distance = sqrt(pow(i - x, 2) + pow(j - y, 2) + pow(k - z, 2));
+                            if (distance <= H)
+                            {
+                                if (old_atom != atom)
+                                {
+                                    new_res = create(atom);
+                                    insert(&reslist, new_res);
+                                    count++;
+                                }
+                                old_atom = atom;
+                            }
+                        }
+                }
+    }
+
+    // Pass res information to char **
+    residues = calloc(count + 1, sizeof(char *));
+    new_res = reslist;
+    j = 0;
+    while (new_res != NULL)
+    {
+        residues[j++] = pdb[new_res->pos];
+        new_res = new_res->next;
+    }
+    free(reslist);
+    residues[j] = NULL;
+
+    return residues;
+}
+
+/* Solvent-exposed residues detection */
+
+/*
+ * Function: _detect
+ * -----------------
+ * 
+ * Detect solvent-exposed residues in a target biomolecule
+ * 
+ * grid: 3D grid
+ * nx: x grid units
+ * ny: y grid units
+ * nz: z grid units
+ * pdb: 1D-array of residues information (resnum_chain)
+ * atoms: xyz coordinates and radii of input pdb
+ * natoms: number of atoms
+ * xyzr: number of data per atom (4: xyzr)
+ * reference: xyz coordinates of 3D grid origin
+ * ndims: number of coordinates (3: xyz)
+ * sincos: sin and cos of 3D grid angles
+ * nvalues: number of sin and cos (sina, cosa, sinb, cosb)
+ * step: 3D grid spacing (A)
+ * probe_in: Probe In size (A)
+ * nthreads: number of threads for OpenMP
+ * verbose: print extra information to standard output
+ * 
+ * returns: array of strings with interface residues
+ */
+char
+    **
+    _detect(int *grid, int size, int nx, int ny, int nz, char **pdb, double *atoms, int natoms, int xyzr, double *reference, int ndims, double *sincos, int nvalues, double step, double probe, int is_ses, int nthreads, int verbose)
+{
+    char **residues;
+
+    _surface(grid, size, nx, ny, nz, atoms, natoms, xyzr, reference, ndims, sincos, nvalues, step, probe, is_ses, nthreads, verbose);
+
+    residues = _interface(grid, nx, ny, nz, pdb, atoms, natoms, xyzr, reference, ndims, sincos, nvalues, step, probe, nthreads, verbose);
+
+    return residues;
 }
