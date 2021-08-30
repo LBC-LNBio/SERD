@@ -21,7 +21,7 @@ run:
 
 ::
 
-  pip install SESD
+  pip install SERD
 
 Or to install the latest developmental version, run:
 
