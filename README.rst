@@ -1,22 +1,22 @@
 ####
-SESD
+SERD
 ####
 
-.. image:: https://img.shields.io/pypi/v/SESD
-    :target: https://pypi.org/project/SESD/
+.. image:: https://img.shields.io/pypi/v/SERD
+    :target: https://pypi.org/project/SERD/
 
-.. image:: https://img.shields.io/pypi/pyversions/SESD
-    :target: https://pypi.org/project/SESD/
+.. image:: https://img.shields.io/pypi/pyversions/SERD
+    :target: https://pypi.org/project/SERD/
 
-A Python package to detect residues that compose the solvent-exposed surface of a target biomolecule.
+A Python package to detect solvent-exposed residues of a target biomolecule.
 
-* `GitHub repository <https://github.com/jvsguerra/SESD>`_
+* `GitHub repository <https://github.com/jvsguerra/SERD>`_
 
 ************
 Installation
 ************
 
-To install the latest release on `PyPI <https://pypi.org/project/SESD>`_, 
+To install the latest release on `PyPI <https://pypi.org/project/SERD>`_, 
 run:
 
 ::
@@ -27,8 +27,8 @@ Or to install the latest developmental version, run:
 
 ::
 
-  git clone https://github.com/LBC-LNBio/SESD.git
-  pip install SESD
+  git clone https://github.com/jvsguerra/SERD.git
+  pip install SERD
 
 *******
 License

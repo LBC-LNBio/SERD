@@ -4,8 +4,8 @@
 import pathlib
 from setuptools import setup, Extension, dist
 
-# SESD information
-from SESD import __name__, __version__
+# SERD information
+from SERD import __name__, __version__
 
 # Prepare reqs from requirements.txt
 with open("requirements.txt") as f:
@@ -28,9 +28,9 @@ except AttributeError:
     numpy_include = numpy.get_numpy_include()
 
 # Extension modules
-_SESD = Extension(
-    name="_SESD",
-    sources=["C/SESD.i", "C/SESD.c"],
+_SERD = Extension(
+    name="_SERD",
+    sources=["C/SERD.i", "C/SERD.c"],
     include_dirs=[numpy_include, "C"],
     extra_compile_args=["-fopenmp", "-Ofast", "-lm"],
     extra_link_args=["-lgomp"],
@@ -40,13 +40,13 @@ _SESD = Extension(
 setup(
     name=__name__,
     version=__version__,
-    description="A Python package to detect residues that compose the solvent-exposed surface of a target biomolecule.",
+    description="A Python package to detect solvent-exposed residues of a target biomolecule.",
     # This is an optional longer description of your project that represents
     # the body of text which users will see when they visit PyPI.
     long_description=long_description,
     long_description_content_type="text/x-rst",
     # This field corresponds to the "Home-Page" metadata field:
-    url="https://github.com/jvsguerra/SESD",
+    url="https://github.com/jvsguerra/SERD",
     # Authors information
     author="João Victor da Silva Guerra",  # Optional
     author_email="jvsguerra@gmail.com",
@@ -73,11 +73,11 @@ setup(
         "Programming Language :: Python :: 3 :: Only",
     ],
     # Keywords
-    keywords="structural biology, proteins, residues, solvent-exposed surface",
+    keywords="structural biology, proteins, biomolecular surface, solvent-exposed residues",
     # Extension C modules
-    ext_modules=[_SESD],
+    ext_modules=[_SERD],
     # Python package configuration
-    packages=["SESD"],
+    packages=["SERD"],
     # Python versions support
     python_requires=">=3.7, <4",
     # This field lists other packages that your project depends on to run.
@@ -87,7 +87,7 @@ setup(
     include_package_data=True,
     # List additional URLs that are relevant to your project as a dict.
     project_urls={  # Optional
-        "Source": "https://github.com/jvsguerra/SESD/",
-        "Issues": "https://github.com/jvsguerra/SESD/issues",
+        "Source": "https://github.com/jvsguerra/SERD/",
+        "Issues": "https://github.com/jvsguerra/SERD/issues",
     },
 )

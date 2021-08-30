@@ -1,8 +1,8 @@
-%module SESD
+%module SERD
 
 %{
     #define SWIG_FILE_WITH_INIT
-    #include "SESD.h"
+    #include "SERD.h"
 %}
 
 %include "numpy.i"
@@ -23,4 +23,4 @@
 /* Sine and Cossine */
 %apply (double* INPLACE_ARRAY1, int DIM1) {(double *sincos, int nvalues)}
 
-%include "SESD.h"
+%include "SERD.h"
