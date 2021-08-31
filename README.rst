@@ -73,7 +73,7 @@ If users prefer, instead of running **SERD.detect** function, users can apply th
 
 .. seealso::
 
-  `pyKVFinder.read_vdw <https://lbc-lnbio.github.io/pyKVFinder/_api_reference/read_vdw.html>`
+  `pyKVFinder.read_vdw <https://lbc-lnbio.github.io/pyKVFinder/_api_reference/read_vdw.html>`_
 
 **SERD.read_pdb** or **SERD.read_xyz** take a target .pdb or .xyz file and returns the atomic information (residue number, chain identifier, residue name, xyz coordinates, radius).
 
@@ -295,9 +295,6 @@ API Reference
    :Returns:         
       **surface** – Surface points in the 3D grid (surface[nx, ny, nz]).
       Surface array has integer labels in each positions, that are:
-
-      ..
-
          * -1: solvent points;
 
          * 0: biomolecule points;
