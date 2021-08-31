@@ -221,8 +221,7 @@ Reads van der Waals radii from .dat file.
 :Raises:          
   * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *fn* must be a string or a pathlib.Path.
 
-  * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – A line in *vdw* has incorrect format. The values must be double
-        tab-separated.
+  * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – A line in *vdw* has incorrect format. The values must be double tab-separated.
 
   * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – A line in *vdw* has an incorrect radius type for an atom.
 
