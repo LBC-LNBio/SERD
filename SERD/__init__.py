@@ -624,7 +624,7 @@ def save_session(
         return
 
     # Prepare target name
-    target_name = os.path.basename(os.path.normpath("examples/1FMO.pdb")).replace(
+    target_name = os.path.basename(os.path.normpath(target)).replace(
         ".pdb", ""
     )
 
