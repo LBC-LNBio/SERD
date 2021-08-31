@@ -303,13 +303,13 @@ Defines the solvent-exposed surface of a target biomolecule.
   **surface** – Surface points in the 3D grid (surface[nx, ny, nz]).
   Surface array has integer labels in each positions, that are:
 
-      * -1: solvent points;
+    * -1: solvent points;
 
-      * 0: biomolecule points;
+    * 0: biomolecule points;
 
-      * 1: solvent-exposed surface points.
+    * 1: solvent-exposed surface points.
 
-      Enclosed regions are considered biomolecule points.
+    Enclosed regions are considered biomolecule points.
 
 :Return type:     
   numpy.ndarray
@@ -350,13 +350,13 @@ name, xyz coordinates, radius).
     Surface points in the 3D grid (surface[nx, ny, nz]).
     Surface array has integer labels in each positions, that are:
 
-        * -1: solvent points;
+      * -1: solvent points;
 
-        * 0: biomolecule points;
+      * 0: biomolecule points;
 
-        * 1: solvent-exposed surface points.
+      * 1: solvent-exposed surface points.
 
-        Enclosed regions are considered biomolecule points.
+      Enclosed regions are considered biomolecule points.
 
   * **atomic** (numpy.ndarray) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
     and radius) for each atom.
