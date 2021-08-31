@@ -151,18 +151,18 @@ Detect solvent-exposed residues of a target biomolecule.
 
   * **target** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB or XYZ file of a target biomolecular structure.
 
-  * **surface** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_ ["VDW", "SES", "SAS"], optional) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
+  * **surface** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["VDW", "SES", "SAS"], optional) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
 
-  * **step** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
+  * **step** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
 
-  * **probe** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
+  * **probe** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
 
-  * **vdw** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_[`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]], *optional*) – A path to a van der Waals radii file, by default None. If None, apply the built-in van der
+  * **vdw** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_\[`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]], *optional*) – A path to a van der Waals radii file, by default None. If None, apply the built-in van der
     Waals radii file: *vdw.dat*.
 
   * **ignore_backbone** (`bool <https://docs.python.org/3/library/functions.html#bool>`_, *optional*) – Whether to ignore backbone atoms (C, CA, N, O) when defining interface residues, by default True.
 
-  * **nthreads** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_[`int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Number of threads, by default None. If None, the number of threads is *os.cpu_count() - 1*.
+  * **nthreads** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_\[`int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Number of threads, by default None. If None, the number of threads is *os.cpu_count() - 1*.
 
   * **verbose** (`bool <https://docs.python.org/3/library/functions.html#bool>`_, *optional*) – Print extra information to standard output, by default False.
 
@@ -209,7 +209,7 @@ Reads van der Waals radii from .dat file.
 
 :Parameters:      
 
-  **fn** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_[`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]], *optional*) – A path to a van der Waals radii file, by default None. If None, apply the built-in van der
+  **fn** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_\[`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]], *optional*) – A path to a van der Waals radii file, by default None. If None, apply the built-in van der
   Waals radii file: *vdw.dat*.
 
 :Returns:         
@@ -240,7 +240,7 @@ Reads PDB file into numpy.ndarrays.
 
 :Parameters:
 
-  * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB file.
+  * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB file.
 
   * **vdw** (Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `float <https://docs.python.org/3/library/functions.html#float>`_]], *optional*) – A dictionary containing radii values, by default None. If None, use output of *SERD.read_vdw()*.
 
@@ -270,9 +270,9 @@ Gets 3D grid vertices.
   * **atomic** (numpy.ndarray) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
     and radius) for each atom.
 
-  * **probe** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Probe size (A), by default 4.0.
+  * **probe** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Probe size (A), by default 4.0.
 
-  * **step** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
+  * **step** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
 
 :Returns:         
   **vertices** – A numpy.ndarray with xyz vertices coordinates
@@ -290,13 +290,13 @@ Defines the solvent-exposed surface of a target biomolecule.
   * **atomic** (numpy.ndarray) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
     and radius) for each atom.
 
-  * **surface** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_["VDW", "SES", "SAS"], *optional*) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
+  * **surface** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["VDW", "SES", "SAS"], *optional*) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
 
-  * **step** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
+  * **step** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
 
-  * **probe** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
+  * **probe** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
 
-  * **nthreads** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_[`int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Number of threads, by default None. If None, the number of threads is *os.cpu_count() - 1*.
+  * **nthreads** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_\[`int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Number of threads, by default None. If None, the number of threads is *os.cpu_count() - 1*.
 
   * **verbose** (`bool <https://docs.python.org/3/library/functions.html#bool>`_, *optional*) – Print extra information to standard output, by default False.
 
@@ -364,11 +364,11 @@ name, xyz coordinates, radius).
 
   * **ignore_backbone** (`bool <https://docs.python.org/3/library/functions.html#bool>`_, *optional*) – Whether to ignore backbone atoms (C, CA, N, O) when defining interface residues, by default True.
 
-  * **step** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
+  * **step** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
 
-  * **probe** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
+  * **probe** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
 
-  * **nthreads** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_[`int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Number of threads, by default None. If None, the number of threads is *os.cpu_count() - 1*.
+  * **nthreads** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_\[`int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Number of threads, by default None. If None, the number of threads is *os.cpu_count() - 1*.
 
   * **verbose** (`bool <https://docs.python.org/3/library/functions.html#bool>`_, *optional*) – Print extra information to standard output, by default False.
 
@@ -408,7 +408,7 @@ Save list of solvent-exposed residues to binary pickle file.
 :Parameters:      
   * **residues** (List[List[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]) – A list of solvent-exposed residues.
 
-  * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to pickle file, by default “residues.pickle”
+  * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to pickle file, by default “residues.pickle”
 
 **SERD.save_session(target, residues, fn='residues.pse')**
 
@@ -417,11 +417,11 @@ the target biomolecular structure (shown as cartoon).
 
 :Parameters:     
 
-  * **target** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB or XYZ file of a target biomolecular structure.
+  * **target** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB or XYZ file of a target biomolecular structure.
 
   * **residues** (List[List[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]) – A list of solvent-exposed residues.
 
-  * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to a PyMOL session file, by default “residues.pse”
+  * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to a PyMOL session file, by default “residues.pse”
 
 *******
 License
