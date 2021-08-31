@@ -69,7 +69,7 @@ void fill(int *grid, int nx, int ny, int nz, double *atoms, int natoms, int xyzr
 
 #pragma omp parallel default(none), shared(grid, reference, step, probe, natoms, nx, ny, nz, sincos, atoms, nthreads), private(atom, i, j, k, distance, H, x, y, z, xaux, yaux, zaux)
     {
-#pragma omp for schedule(dynamic) nowait
+#pragma omp for schedule(dynamic)
         for (atom = 0; atom < natoms; atom++)
         {
             // Convert atom coordinates in 3D grid coordinates
@@ -168,7 +168,7 @@ void ses(int *grid, int nx, int ny, int nz, double step, double probe, int nthre
 
 #pragma omp parallel default(none), shared(grid, step, probe, aux, nx, ny, nz), private(i, j, k, i2, j2, k2, distance)
     {
-#pragma omp for schedule(dynamic) collapse(3) nowait
+#pragma omp for schedule(dynamic) collapse(3)
         // Loop around 3D grid
         for (i = 0; i < nx; i++)
             for (j = 0; j < ny; j++)
@@ -398,7 +398,7 @@ void _surface(int *grid, int size, int nx, int ny, int nz, double *atoms, int na
     filter_enclosed_regions(grid, nx, ny, nz, nthreads);
 }
 
-/* Retrieve interface residues */
+/* Solvent-exposed residues detection */
 
 /*
  * Struct: node
@@ -534,7 +534,7 @@ char
                 for (k = floor(z - H); k <= ceil(z + H); k++)
                 {
                     if (i < nx && i > 0 && j < ny && j > 0 && k < nz && k > 0)
-                        if (grid[k + nz * (j + (ny * i))])
+                        if (grid[k + nz * (j + (ny * i))] == 1)
                         {
                             distance = sqrt(pow(i - x, 2) + pow(j - y, 2) + pow(k - z, 2));
                             if (distance <= H)
@@ -562,46 +562,6 @@ char
     }
     free(reslist);
     residues[j] = NULL;
-
-    return residues;
-}
-
-/* Solvent-exposed residues detection */
-
-/*
- * Function: _detect
- * -----------------
- * 
- * Detect solvent-exposed residues in a target biomolecule
- * 
- * grid: 3D grid
- * nx: x grid units
- * ny: y grid units
- * nz: z grid units
- * pdb: 1D-array of residues information (resnum_chain)
- * atoms: xyz coordinates and radii of input pdb
- * natoms: number of atoms
- * xyzr: number of data per atom (4: xyzr)
- * reference: xyz coordinates of 3D grid origin
- * ndims: number of coordinates (3: xyz)
- * sincos: sin and cos of 3D grid angles
- * nvalues: number of sin and cos (sina, cosa, sinb, cosb)
- * step: 3D grid spacing (A)
- * probe_in: Probe In size (A)
- * nthreads: number of threads for OpenMP
- * verbose: print extra information to standard output
- * 
- * returns: array of strings with interface residues
- */
-char
-    **
-    _detect(int *grid, int size, int nx, int ny, int nz, char **pdb, double *atoms, int natoms, int xyzr, double *reference, int ndims, double *sincos, int nvalues, double step, double probe, int is_ses, int nthreads, int verbose)
-{
-    char **residues;
-
-    _surface(grid, size, nx, ny, nz, atoms, natoms, xyzr, reference, ndims, sincos, nvalues, step, probe, is_ses, nthreads, verbose);
-
-    residues = _interface(grid, nx, ny, nz, pdb, atoms, natoms, xyzr, reference, ndims, sincos, nvalues, step, probe, nthreads, verbose);
 
     return residues;
 }

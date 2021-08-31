@@ -143,7 +143,7 @@ Further, users can save the list of solvent-exposed residues to a pickle binary 
 API Reference
 *************
 
-**SERD.detect(target, surface='SES', step=0.6, probe=1.4, vdw=None, ignore_backbone=True, nthreads=None, verbose=False)**
+**SERD.detect(target, surface_representation='SES', step=0.6, probe=1.4, vdw=None, ignore_backbone=True, nthreads=None, verbose=False)**
 
 Detect solvent-exposed residues of a target biomolecule.
 
@@ -151,7 +151,7 @@ Detect solvent-exposed residues of a target biomolecule.
 
   * **target** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB or XYZ file of a target biomolecular structure.
 
-  * **surface** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["VDW", "SES", "SAS"], optional) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
+  * **surface_representation** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["VDW", "SES", "SAS"], optional) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
 
   * **step** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
 
@@ -175,7 +175,7 @@ Detect solvent-exposed residues of a target biomolecule.
 :Raises:          
   * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *target* must be a string or a pathlib.Path.
 
-  * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *surface* must be a *VDW*, *SES* or *SAS*.
+  * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *surface_representation* must be a *VDW*, *SES* or *SAS*.
 
   * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *step* must be a positive real number.
 
@@ -280,7 +280,7 @@ Gets 3D grid vertices.
 :Return type:     
   numpy.ndarray
 
-**SERD.surface(atomic, surface='SES', step=0.6, probe=1.4, nthreads=None, verbose=False)**
+**SERD.surface(atomic, surface_representation='SES', step=0.6, probe=1.4, nthreads=None, verbose=False)**
 
 Defines the solvent-exposed surface of a target biomolecule.
 
@@ -289,7 +289,7 @@ Defines the solvent-exposed surface of a target biomolecule.
   * **atomic** (numpy.ndarray) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
     and radius) for each atom.
 
-  * **surface** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["VDW", "SES", "SAS"], *optional*) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
+  * **surface_representation** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["VDW", "SES", "SAS"], *optional*) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
 
   * **step** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
 
@@ -319,7 +319,7 @@ Defines the solvent-exposed surface of a target biomolecule.
 
   * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *atomic* has incorrect shape. It must be (n, 8).
 
-  * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *surface* must be a *VDW*, *SES* or *SAS*.
+  * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *surface_representation* must be a *VDW*, *SES* or *SAS*.
 
   * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *step* must be a positive real number.
 

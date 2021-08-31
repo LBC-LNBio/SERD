@@ -78,17 +78,17 @@ def get_vertices(
         A numpy.ndarray with xyz vertices coordinates
         (origin, X-axis, Y-axis, Z-axis).
     """
-    from pyKVFinder import get_vertices
+    from pyKVFinder import get_vertices as gv
 
     # Get vertices
-    vertices = get_vertices(atomic, 2 * probe, 2 * step)
+    vertices = gv(atomic, 2 * probe, 2 * step)
 
     return vertices
 
 
 def surface(
     atomic: numpy.ndarray,
-    surface: Literal["VDW", "SES", "SAS"] = "SES",
+    surface_representation: Literal["VDW", "SES", "SAS"] = "SES",
     step: Union[float, int] = 0.6,
     probe: Union[float, int] = 1.4,
     nthreads: Optional[int] = None,
@@ -101,8 +101,8 @@ def surface(
     atomic : numpy.ndarray
         A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
         and radius) for each atom.
-    surface : Literal["VDW", "SES", "SAS"], optional
-        Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface)
+    surface_representation : Literal["VDW", "SES", "SAS"], optional
+        Surface representation. Keywords options are VDW (van der Waals surface), SES (Solvent Excluded Surface)
         or SAS (Solvent Accessible Surface), by default "SES".
     step : Union[float, int], optional
         Grid spacing (A), by default 0.6.
@@ -135,7 +135,7 @@ def surface(
     ValueError
         `atomic` has incorrect shape. It must be (n, 8).
     TypeError
-        `surface` must be a `VDW`, `SES` or `SAS`.
+        `surface_representation` must be a `VDW`, `SES` or `SAS`.
     TypeError
         `step` must be a positive real number.
     ValueError
@@ -162,8 +162,8 @@ def surface(
         raise ValueError("`atomic` has incorrect shape. It must be (n, 8).")
     elif atomic.shape[1] != 8:
         raise ValueError("`atomic` has incorrect shape. It must be (n, 8).")
-    if surface not in ["VDW", "SES", "SAS"]:
-        raise TypeError("`surface` must be a `VDW`, `SES` or `SAS`.")
+    if surface_representation not in ["VDW", "SES", "SAS"]:
+        raise TypeError("`surface_representation` must be a `VDW`, `SES` or `SAS`.")
     if type(step) not in [float, int]:
         raise TypeError("`step` must be a positive real number.")
     elif step <= 0.0:
@@ -187,24 +187,24 @@ def surface(
     probe = float(probe) if type(probe) is int else probe
 
     # If surface representation is the van der Waals surface, the probe must be 0.0
-    if surface == "VDW":
+    if surface_representation == "VDW":
         if verbose:
             print("> Surface representation: van der Waals (vdW).")
         probe = 0.0
-        surface = True
+        surface_representation = True
     else:
         if probe == 0.0:
             raise ValueError(
-                f"`probe` must be a positive real number, when {surface} is set."
+                f"`probe` must be a positive real number, when {surface_representation} is set."
             )
-        if surface == "SES":
+        if surface_representation == "SES":
             if verbose:
                 print("> Surface representation: Solvent Excluded Surface (SES).")
-            surface = True
-        elif surface == "SAS":
+            surface_representation = True
+        elif surface_representation == "SAS":
             if verbose:
                 print("> Surface representation: Solvent Accessible Surface (SAS).")
-            surface = False
+            surface_representation = False
 
     # Get vertices
     vertices = get_vertices(atomic, probe, step)
@@ -232,7 +232,7 @@ def surface(
         sincos,
         step,
         probe,
-        surface,
+        surface_representation,
         nthreads,
         verbose,
     ).reshape(nx, ny, nz)
@@ -389,7 +389,7 @@ def interface(
 
 def detect(
     target: Union[str, pathlib.Path],
-    surface: Literal["VDW", "SES", "SAS"] = "SES",
+    surface_representation: Literal["VDW", "SES", "SAS"] = "SES",
     step: Union[float, int] = 0.6,
     probe: Union[float, int] = 1.4,
     vdw: Optional[Union[str, pathlib.Path]] = None,
@@ -403,7 +403,7 @@ def detect(
     ----------
     target : Union[str, pathlib.Path]
         A path to PDB or XYZ file of a target biomolecular structure.
-    surface : Literal["VDW", "SES", "SAS"], optional
+    surface_representation : Literal["VDW", "SES", "SAS"], optional
         Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface)
         or SAS (Solvent Accessible Surface), by default "SES".
     step : Union[float, int], optional
@@ -431,7 +431,7 @@ def detect(
     TypeError
         `target` must be a string or a pathlib.Path.
     TypeError
-        `surface` must be a `VDW`, `SES` or `SAS`.
+        `surface_representation` must be a `VDW`, `SES` or `SAS`.
     TypeError
         `step` must be a positive real number.
     ValueError
@@ -459,13 +459,11 @@ def detect(
     atom by residue and when not defined, it uses a generic value
     based on the atom type (see pyKVFinder package).
     """
-    from _SERD import _detect
-
     # Check arguments types
     if type(target) not in [str, pathlib.Path]:
         raise TypeError("`target` must be a string or a pathlib.Path.")
-    if surface not in ["VDW", "SES", "SAS"]:
-        raise TypeError("`surface` must be a `VDW`, `SES` or `SAS`.")
+    if surface_representation not in ["VDW", "SES", "SAS"]:
+        raise TypeError("`surface_representation` must be a `VDW`, `SES` or `SAS`.")
     if type(step) not in [float, int]:
         raise TypeError("`step` must be a positive real number.")
     elif step <= 0.0:
@@ -487,30 +485,6 @@ def detect(
     if type(verbose) not in [bool]:
         raise TypeError("`verbose` must be a boolean.")
 
-    # Convert types
-    step = float(step) if type(step) is int else step
-    probe = float(probe) if type(probe) is int else probe
-
-    # If surface representation is the van der Waals surface, the probe must be 0.0
-    if surface == "VDW":
-        if verbose:
-            print("> Surface representation: van der Waals (vdW).")
-        probe = 0.0
-        surface = True
-    else:
-        if probe == 0.0:
-            raise ValueError(
-                f"`probe` must be a positive real number, when {surface} is set."
-            )
-        if surface == "SES":
-            if verbose:
-                print("> Surface representation: Solvent Excluded Surface (SES).")
-            surface = True
-        elif surface == "SAS":
-            if verbose:
-                print("> Surface representation: Solvent Accessible Surface (SAS).")
-            surface = False
-
     # Read van der Waals radii dictionary
     vdw = read_vdw(vdw)
 
@@ -522,63 +496,13 @@ def detect(
     else:
         raise ValueError("`target` must be .pdb or .xyz.")
 
-    # Get vertices
-    vertices = get_vertices(atomic, probe, step)
+    # Define solvent-exposed surface
+    solvsurf = surface(atomic, surface_representation, step, probe, nthreads, verbose)
 
-    # Get sincos
-    sincos = _get_sincos(vertices)
-
-    # Get dimensions
-    nx, ny, nz = _get_dimensions(vertices, step)
-
-    # Get size
-    size = nx * ny * nz
-
-    # Extract xyzr from atomic
-    xyzr = atomic[:, 4:].astype(numpy.float64)
-
-    # Extract atominfo from atomic
-    atominfo = numpy.asarray(
-        ([[f"{atom[0]}_{atom[1]}_{atom[2]}", atom[3]] for atom in atomic[:, :4]])
+    # Define solvent-exposed residues
+    residues = interface(
+        solvsurf, atomic, ignore_backbone, step, probe, nthreads, verbose
     )
-
-    # Remove backbone from atominfo
-    if ignore_backbone:
-        mask = numpy.where(
-            (atominfo[:, 1] != "C")
-            & (atominfo[:, 1] != "CA")
-            & (atominfo[:, 1] != "N")
-            & (atominfo[:, 1] != "O")
-        )
-        atominfo = atominfo[
-            mask[0],
-        ]
-        xyzr = xyzr[
-            mask[0],
-        ]
-
-    # Prepare atominfo
-    atominfo = atominfo[:, 0].tolist()
-
-    # Detect solvent-exposed residues
-    residues = _detect(
-        size,
-        nx,
-        ny,
-        nz,
-        atominfo,
-        xyzr,
-        vertices[0],
-        sincos,
-        step,
-        probe,
-        surface,
-        nthreads,
-        verbose,
-    )
-
-    # Process residues
-    residues = _process_residues(residues)
 
     return residues
 
@@ -624,13 +548,13 @@ def save_session(
         return
 
     # Prepare target name
-    target_name = os.path.basename(os.path.normpath(target)).replace(
-        ".pdb", ""
-    )
+    target_name = os.path.basename(os.path.normpath(target)).replace(".pdb", "")
 
     # Load target biomolecule
     cmd.reinitialize()
     cmd.load(target, target_name)
+    cmd.hide("everything", target_name)
+    cmd.show("sticks", target_name)
 
     # Select residues
     command = f"{target_name} and"
@@ -643,12 +567,9 @@ def save_session(
     # Create residues object
     cmd.create("residues", "res")
     cmd.delete("res")
-    cmd.hide("everything", "residues")
-    cmd.show("sticks", "residues")
     cmd.color("red", "residues")
     cmd.disable(target_name)
     cmd.enable(target_name)
-    cmd.set("auto_zoom", 1)
 
     # Save PyMOL session
     cmd.save(fn)
