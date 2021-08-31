@@ -465,7 +465,15 @@ def interface(
 
     # Detect solvent-exposed residues
     residues = _interface(
-        surface, atominfo, xyzr, vertices[0], sincos, step, probe, nthreads, verbose
+        surface,
+        atominfo,
+        xyzr,
+        vertices[0],
+        sincos,
+        step,
+        probe + step / 2,
+        nthreads,
+        verbose,
     )
 
     # Process residues
