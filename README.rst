@@ -170,7 +170,7 @@ Detect solvent-exposed residues of a target biomolecule.
   **residues** – A list of solvent-exposed residues.
 
 :Return type:     
-  List[List[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]
+  `List <https://docs.python.org/3/library/typing.html#typing.List>`_\[`List <https://docs.python.org/3/library/typing.html#typing.List>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]
 
 :Raises:          
   * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *target* must be a string or a pathlib.Path.
@@ -216,7 +216,7 @@ Reads van der Waals radii from .dat file.
   **vdw** – A dictionary containing radii values.
 
 :Return type:     
-  Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `float <https://docs.python.org/3/library/functions.html#float>`_]]
+  `Dict <https://docs.python.org/3/library/typing.html#typing.Dict>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `Dict <https://docs.python.org/3/library/typing.html#typing.Dict>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `float <https://docs.python.org/3/library/functions.html#float>`_]]
 
 :Raises:          
   * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *fn* must be a string or a pathlib.Path.
@@ -242,7 +242,7 @@ Reads PDB file into numpy.ndarrays.
 
   * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB file.
 
-  * **vdw** (Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `float <https://docs.python.org/3/library/functions.html#float>`_]], *optional*) – A dictionary containing radii values, by default None. If None, use output of *SERD.read_vdw()*.
+  * **vdw** (`Dict <https://docs.python.org/3/library/typing.html#typing.Dict>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `Dict <https://docs.python.org/3/library/typing.html#typing.Dict>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `float <https://docs.python.org/3/library/functions.html#float>`_]], *optional*) – A dictionary containing radii values, by default None. If None, use output of *SERD.read_vdw()*.
 
 :Returns:         
   **atomic** – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
@@ -376,7 +376,7 @@ name, xyz coordinates, radius).
   **residues** – A list of solvent-exposed residues.
 
 :Return type:     
-  List[List[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]
+  `List <https://docs.python.org/3/library/typing.html#typing.List>`_\[`List <https://docs.python.org/3/library/typing.html#typing.List>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]
 
 :Raises:          
   * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *surface* must be a numpy.ndarray.
@@ -406,7 +406,7 @@ name, xyz coordinates, radius).
 Save list of solvent-exposed residues to binary pickle file.
 
 :Parameters:      
-  * **residues** (List[List[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]) – A list of solvent-exposed residues.
+  * **residues** (`List <https://docs.python.org/3/library/typing.html#typing.List>`_\[`List <https://docs.python.org/3/library/typing.html#typing.List>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]) – A list of solvent-exposed residues.
 
   * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to pickle file, by default “residues.pickle”
 
@@ -419,7 +419,7 @@ the target biomolecular structure (shown as cartoon).
 
   * **target** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB or XYZ file of a target biomolecular structure.
 
-  * **residues** (List[List[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]) – A list of solvent-exposed residues.
+  * **residues** (`List <https://docs.python.org/3/library/typing.html#typing.List>`_\[`List <https://docs.python.org/3/library/typing.html#typing.List>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]) – A list of solvent-exposed residues.
 
   * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to a PyMOL session file, by default “residues.pse”
 
