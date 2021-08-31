@@ -149,10 +149,9 @@ Detect solvent-exposed residues of a target biomolecule.
 
 :Parameters:      
 
-  * **target** (*Union*[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_*]*) – A path to PDB or XYZ file of a target biomolecular structure.
+  * **target** (Union[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB or XYZ file of a target biomolecular structure.
 
-  * **surface** (*Literal**[**"VDW"**, **"SES"**, **"SAS"**]**, **optional*) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface)
-    or SAS (Solvent Accessible Surface), by default “SES”.
+  * **surface** (Literal["VDW", "SES", "SAS"], optional) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
 
   * **step** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Grid spacing (A), by default 0.6.
 
