@@ -2,6 +2,7 @@
 *.pickle
 *.pdb
 *.pse
+docs/
 
 # VScode
 .vscode
