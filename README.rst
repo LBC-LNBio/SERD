@@ -149,7 +149,7 @@ Detect solvent-exposed residues of a target biomolecule.
 
 :Parameters:      
 
-  * **target** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_ [`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB or XYZ file of a target biomolecular structure.
+  * **target** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]) – A path to PDB or XYZ file of a target biomolecular structure.
 
   * **surface** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_ ["VDW", "SES", "SAS"], optional) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
 
