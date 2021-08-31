@@ -143,7 +143,7 @@ Further, users can save the list of solvent-exposed residues to a pickle binary 
 API Reference
 *************
 
-**SERD.detect(target: Union[str, pathlib.Path], surface: Literal[VDW, SES, SAS] = 'SES', step: Union[float, int] = 0.6, probe: Union[float, int] = 1.4, vdw: Optional[Union[str, pathlib.Path]] = None, ignore_backbone: bool = True, nthreads: Optional[int] = None, verbose: bool = False)**
+**SERD.detect(target, surface='SES', step=0.6, probe=1.4, vdw=None, ignore_backbone=True, nthreads=None, verbose=False)**
 
    Detect solvent-exposed residues of a target biomolecule.
 
@@ -202,7 +202,7 @@ API Reference
       atom by residue and when not defined, it uses a generic value
       based on the atom type (see pyKVFinder package).
 
-**SERD.read_vdw(fn: Optional[Union[str, pathlib.Path]] = None) -> Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `float <https://docs.python.org/3/library/functions.html#float>`_]]**
+**SERD.read_vdw(fn=None)**
 
    Reads van der Waals radii from .dat file.
 
@@ -229,7 +229,7 @@ API Reference
       based on the atom type (see *van der Waals file template*).
       The package contains a built-in van der Waals radii file: *vdw.dat*.
 
-**SERD.read_pdb(fn: Union[str, pathlib.Path], vdw: Optional[Dict[str, Dict[str, float]]] = None) -> numpy.ndarray**
+**SERD.read_pdb(fn, vdw=None)**
 
    Reads PDB file into numpy.ndarrays.
 
@@ -253,7 +253,7 @@ API Reference
       atom type. The function by default loads the built-in van der Waals radii
       file: *vdw.dat*.
 
-**SERD.get_vertices(atomic: numpy.ndarray, probe: Union[float, int] = 1.4, step: Union[float, int] = 0.6) -> numpy.ndarray**
+**SERD.get_vertices(atomic, probe=1.4, step=0.6)**
 
    Gets 3D grid vertices.
 
@@ -272,7 +272,7 @@ API Reference
    :Return type:     
       numpy.ndarray
 
-**SERD.surface(atomic: numpy.ndarray, surface: Literal[VDW, SES, SAS] = 'SES', step: Union[float, int] = 0.6, probe: Union[float, int] = 1.4, nthreads: Optional[int] = None, verbose: bool = False) -> numpy.ndarray**
+**SERD.surface(atomic, surface='SES', step=0.6, probe=1.4, nthreads=None, verbose=False)**
 
    Defines the solvent-exposed surface of a target biomolecule.
 
@@ -295,6 +295,7 @@ API Reference
    :Returns:         
       **surface** – Surface points in the 3D grid (surface[nx, ny, nz]).
       Surface array has integer labels in each positions, that are:
+
          * -1: solvent points;
 
          * 0: biomolecule points;
@@ -329,7 +330,7 @@ API Reference
 
       * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *probe* must be a positive real number, when SES or SAS is set.
 
-**SERD.interface(surface: numpy.ndarray, atomic: numpy.ndarray, ignore_backbone: bool = True, step: Union[float, int] = 0.6, probe: Union[float, int] = 1.4, nthreads: Optional[int] = None, verbose: bool = False) -> List[List[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]**
+**SERD.interface(surface, atomic, ignore_backbone=True, step=0.6, probe=1.4, nthreads=None, verbose=False)**
 
    Identify solvent-exposed residues based on a target solvent-exposed surface
    and atomic information of a biomolecule (residue number, chain identifier, residue
@@ -340,8 +341,6 @@ API Reference
 
         Surface points in the 3D grid (surface[nx, ny, nz]).
         Surface array has integer labels in each positions, that are:
-
-        ..
 
            * -1: solvent points;
 
@@ -394,7 +393,7 @@ API Reference
 
       * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *verbose* must be a boolean.
 
-**SERD.save(residues: List[List[str]], fn: Union[str, pathlib.Path] = 'residues.pickle')**
+**SERD.save(residues, fn='residues.pickle')**
 
    Save list of solvent-exposed residues to binary pickle file.
 
@@ -403,7 +402,7 @@ API Reference
 
       * **fn** (*Union**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_*]**, **optional*) – A path to pickle file, by default “residues.pickle”
 
-**SERD.save_session(target: Union[str, pathlib.Path], residues: List[List[str]], fn: Union[str, pathlib.Path] = 'residues.pse')**
+**SERD.save_session(target, residues, fn='residues.pse')**
 
    Save a PyMOL session with the solvent-exposed residues (shown as red sticks) and
    the target biomolecular structure (shown as cartoon).
