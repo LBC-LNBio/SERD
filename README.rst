@@ -153,19 +153,18 @@ Detect solvent-exposed residues of a target biomolecule.
 
   * **surface** (Literal["VDW", "SES", "SAS"], optional) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface) or SAS (Solvent Accessible Surface), by default “SES”.
 
-  * **step** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Grid spacing (A), by default 0.6.
+  * **step** (Union[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Grid spacing (A), by default 0.6.
 
-  * **probe** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
+  * **probe** (Union[`float <https://docs.python.org/3/library/functions.html#float>`_, `int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
 
-  * **vdw** (*Optional**[**Union**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_*]**]**, **optional*) – A path to a van der Waals radii file, by default None. If None, apply the built-in van der
+  * **vdw** (Optional[Union[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_]], *optional*) – A path to a van der Waals radii file, by default None. If None, apply the built-in van der
     Waals radii file: *vdw.dat*.
 
-  * **ignore_backbone** (`bool <https://docs.python.org/3/library/functions.html#bool>`_*, **optional*) – Whether to ignore backbone atoms (C, CA, N, O) when defining interface residues, by default True.
+  * **ignore_backbone** (`bool <https://docs.python.org/3/library/functions.html#bool>`_, *optional*) – Whether to ignore backbone atoms (C, CA, N, O) when defining interface residues, by default True.
 
-  * **nthreads** (*Optional**[*`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Number of threads, by default None. If None, the number of threads is
-    *os.cpu_count() - 1*.
+  * **nthreads** (Optional[`int <https://docs.python.org/3/library/functions.html#int>`_], *optional*) – Number of threads, by default None. If None, the number of threads is *os.cpu_count() - 1*.
 
-  * **verbose** (`bool <https://docs.python.org/3/library/functions.html#bool>`_*, **optional*) – Print extra information to standard output, by default False.
+  * **verbose** (`bool <https://docs.python.org/3/library/functions.html#bool>`_, *optional*) – Print extra information to standard output, by default False.
 
 :Returns:         
   **residues** – A list of solvent-exposed residues.
@@ -198,7 +197,9 @@ Detect solvent-exposed residues of a target biomolecule.
 
   * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *target* must be .pdb or .xyz.
 
-Note: The van der Waals radii file defines the radius values for each
+.. note:: 
+  
+  The van der Waals radii file defines the radius values for each
   atom by residue and when not defined, it uses a generic value
   based on the atom type (see pyKVFinder package).
 
