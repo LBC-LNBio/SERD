@@ -18,14 +18,13 @@ __license__ = "GNU GPL-3.0 License"
 import os
 import pathlib
 import numpy
-from pyKVFinder import read_vdw, read_pdb, read_xyz
+from pyKVFinder import read_vdw
 from pyKVFinder.grid import _get_sincos, _get_dimensions
-from typing import Union, Optional, Literal, List
+from typing import Union, Optional, Literal, List, Dict
 
 __all__ = [
     "read_vdw",
     "read_pdb",
-    "read_xyz",
     "get_vertices",
     "_get_sincos",
     "_get_dimensions",
@@ -53,6 +52,94 @@ def _process_residues(residues: List[str]) -> List[List[str]]:
        residue name).
     """
     return [res.split("_") for res in list(dict.fromkeys(residues))]
+
+
+def _process_pdb_line(
+    line: str, vdw: Dict[str, Dict[str, float]]
+) -> List[Union[str, float, int]]:
+    """Extracts ATOM and HETATM information of PDB line.
+
+    Parameters
+    ----------
+    line : str
+        A line of a valid PDB file
+    vdw : Dict[str, Dict[str, Dict[str, float]]]
+        A dictionary containing radii values.
+
+    Returns
+    -------
+    atomic : List[Union[str, float, int]]
+        A list with resnum, chain, resname, atom name, xyz coordinates and radius.
+    """
+    # Get PDB infomation
+    atom = line[12:16].strip()
+    resname = line[17:20].strip()
+    resnum = line[22:27].strip()
+    chain = line[21]
+    x = float(line[30:38])
+    y = float(line[38:46])
+    z = float(line[46:54])
+    atom_symbol = line[76:78].strip().upper()
+
+    # Get atom and radius from vdw
+    if resname in vdw.keys() and atom in vdw[resname].keys():
+        radius = vdw[resname][atom]
+    else:
+        radius = vdw["GEN"][atom_symbol]
+
+    # Prepare output
+    atomic = [resnum, chain, resname, atom, x, y, z, radius]
+
+    return atomic
+
+
+def read_pdb(
+    fn: Union[str, pathlib.Path], vdw: Optional[Dict[str, Dict[str, float]]] = None
+) -> numpy.ndarray:
+    """Reads PDB file into numpy.ndarrays.
+
+    Parameters
+    ----------
+    fn : Union[str, pathlib.Path]
+        A path to PDB file.
+    vdw : Dict[str, Dict[str, float]], optional
+        A dictionary containing radii values, by default None. If None, use output of `pyKVFinder.read_vdw()`.
+
+    Returns
+    -------
+    atomic : numpy.ndarray
+        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+        and radius) for each atom.
+
+    Raises
+    ------
+    TypeError
+        `fn` must be a string or a pathlib.Path.
+
+    Note
+    ----
+    The van der Waals radii file defines the radius values for each atom
+    by residue and when not defined, it uses a generic value based on the
+    atom type. The function by default loads the built-in van der Waals radii
+    file: `vdw.dat`.
+    """
+    # Check arguments
+    if type(fn) not in [str, pathlib.Path]:
+        raise TypeError("`fn` must be a string or a pathlib.Path.")
+
+    # Define default vdw file
+    if vdw is None:
+        vdw = read_vdw(None)
+
+    # Create lists
+    atomic = []
+
+    with open(fn, "r") as f:
+        for line in f.readlines():
+            if line[:4] == "ATOM" or line[:6] == "HETATM":
+                atomic.append(_process_pdb_line(line, vdw))
+
+    return numpy.asarray(atomic)
 
 
 def get_vertices(
