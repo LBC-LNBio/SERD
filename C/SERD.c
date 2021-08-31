@@ -275,9 +275,78 @@ void filter_surface(int *grid, int nx, int ny, int nz, int nthreads)
         for (i = 0; i < nx; i++)
             for (j = 0; j < ny; j++)
                 for (k = 0; k < nz; k++)
-                    if (grid[k + nz * (j + (ny * i))])
+                    if (grid[k + nz * (j + (ny * i))] == 1)
                         // Define surface cavity points
                         grid[k + nz * (j + (ny * i))] = define_surface_points(grid, nx, ny, nz, i, j, k);
+    }
+}
+
+/*
+ * Function: define_surface_points
+ * -------------------------------
+ * 
+ * Identify surface points based on neighboring points
+ * 
+ * grid: 3D grid
+ * nx: x grid units
+ * ny: y grid units
+ * nz: z grid units
+ * i: x coordinate of cavity point
+ * j: y coordinate of cavity point
+ * k: z coordinate of cavity point
+ * 
+ * returns: surface point (1) or medium point (-1)
+ */
+int remove_enclosed_points(int *grid, int nx, int ny, int nz, int i, int j, int k)
+{
+    int x, y, z;
+
+    // Loop around neighboring points
+    for (x = i - 1; x <= i + 1; x++)
+        for (y = j - 1; y <= j + 1; y++)
+            for (z = k - 1; z <= k + 1; z++)
+            {
+                // Check if point is inside 3D grid
+                if (x < 0 || y < 0 || z < 0 || x > nx - 1 || y > ny - 1 || z > nz - 1)
+                    ;
+                else if (grid[z + nz * (y + (ny * x))] == -1)
+                    return 1;
+            }
+
+    return 0;
+}
+
+/*
+ * Function: filter_surface
+ * ------------------------
+ * 
+ * Inspect 3D grid and mark detected surface points on a surface 3D grid
+ * 
+ * grid: 3D grid
+ * surface: surface points 3D grid
+ * nx: x grid units
+ * ny: y grid units
+ * nz: z grid units
+ * nthreads: number of threads for OpenMP
+ * 
+ */
+void filter_enclosed_regions(int *grid, int nx, int ny, int nz, int nthreads)
+{
+    int i, j, k;
+
+    // Set number of threads in OpenMP
+    omp_set_num_threads(nthreads);
+    omp_set_nested(1);
+
+#pragma omp parallel default(none), shared(grid, nx, ny, nz), private(i, j, k)
+    {
+#pragma omp for collapse(3) schedule(static)
+        for (i = 0; i < nx; i++)
+            for (j = 0; j < ny; j++)
+                for (k = 0; k < nz; k++)
+                    if (grid[k + nz * (j + (ny * i))] == 1)
+                        // Remove enclosed regions
+                        grid[k + nz * (j + (ny * i))] = remove_enclosed_points(grid, nx, ny, nz, i, j, k);
     }
 }
 
@@ -323,6 +392,10 @@ void _surface(int *grid, int size, int nx, int ny, int nz, double *atoms, int na
     if (verbose)
         fprintf(stdout, "> Defining surface points\n");
     filter_surface(grid, nx, ny, nz, nthreads);
+
+    if (verbose)
+        fprintf(stdout, "> Filtering enclosed regions\n");
+    filter_enclosed_regions(grid, nx, ny, nz, nthreads);
 }
 
 /* Retrieve interface residues */

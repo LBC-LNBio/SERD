@@ -1,5 +1,10 @@
+# Ignore files
+*.pickle
+*.pdb
+*.pse
+
 # VScode
-.vscode 
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
