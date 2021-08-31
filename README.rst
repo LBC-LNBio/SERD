@@ -73,7 +73,7 @@ If users prefer, instead of running **SERD.detect** function, users can apply th
 
 .. seealso::
 
-`pyKVFinder.read_vdw <https://lbc-lnbio.github.io/pyKVFinder/_api_reference/read_vdw.html>`
+  `pyKVFinder.read_vdw <https://lbc-lnbio.github.io/pyKVFinder/_api_reference/read_vdw.html>`
 
 **SERD.read_pdb** or **SERD.read_xyz** take a target .pdb or .xyz file and returns the atomic information (residue number, chain identifier, residue name, xyz coordinates, radius).
 
@@ -143,7 +143,280 @@ Further, users can save the list of solvent-exposed residues to a pickle binary 
 API Reference
 *************
 
-.. autofunction:: SERD.detect
+**SERD.detect(target: Union[str, pathlib.Path], surface: Literal[VDW, SES, SAS] = 'SES', step: Union[float, int] = 0.6, probe: Union[float, int] = 1.4, vdw: Optional[Union[str, pathlib.Path]] = None, ignore_backbone: bool = True, nthreads: Optional[int] = None, verbose: bool = False)**
+
+   Detect solvent-exposed residues of a target biomolecule.
+
+   :Parameters:      
+      * **target** (*Union**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_*]*) – A path to PDB or XYZ file of a target biomolecular structure.
+
+      * **surface** (*Literal**[**"VDW"**, **"SES"**, **"SAS"**]**, **optional*) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface)
+        or SAS (Solvent Accessible Surface), by default “SES”.
+
+      * **step** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Grid spacing (A), by default 0.6.
+
+      * **probe** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
+
+      * **vdw** (*Optional**[**Union**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_*]**]**, **optional*) – A path to a van der Waals radii file, by default None. If None, apply the built-in van der
+        Waals radii file: *vdw.dat*.
+
+      * **ignore_backbone** (`bool <https://docs.python.org/3/library/functions.html#bool>`_*, **optional*) – Whether to ignore backbone atoms (C, CA, N, O) when defining interface residues, by default True.
+
+      * **nthreads** (*Optional**[*`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Number of threads, by default None. If None, the number of threads is
+        *os.cpu_count() - 1*.
+
+      * **verbose** (`bool <https://docs.python.org/3/library/functions.html#bool>`_*, **optional*) – Print extra information to standard output, by default False.
+
+   :Returns:         
+      **residues** – A list of solvent-exposed residues.
+
+   :Return type:     
+      List[List[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]
+
+   :Raises:          
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *target* must be a string or a pathlib.Path.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *surface* must be a *VDW*, *SES* or *SAS*.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *step* must be a positive real number.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *step* must be a positive real number.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *probe* must be a non-negative real number.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *probe* must be a non-negative real number.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *vdw* must be a string or a pathlib.Path.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *nthreads* must be a positive integer.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *nthreads* must be a positive integer.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *verbose* must be a boolean.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *probe* must be a positive real number, when SES or SAS is set.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *target* must be .pdb or .xyz.
+
+   Note: The van der Waals radii file defines the radius values for each
+      atom by residue and when not defined, it uses a generic value
+      based on the atom type (see pyKVFinder package).
+
+**SERD.read_vdw(fn: Optional[Union[str, pathlib.Path]] = None) -> Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `float <https://docs.python.org/3/library/functions.html#float>`_]]**
+
+   Reads van der Waals radii from .dat file.
+
+   :Parameters:      
+      **fn** (*Optional**[**Union**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_*]**]**, **optional*) – A path to a van der Waals radii file, by default None. If None, apply the built-in van der
+      Waals radii file: *vdw.dat*.
+
+   :Returns:         
+      **vdw** – A dictionary containing radii values.
+
+   :Return type:     
+      Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, Dict[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `float <https://docs.python.org/3/library/functions.html#float>`_]]
+
+   :Raises:          
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *fn* must be a string or a pathlib.Path.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – A line in *vdw* has incorrect format. The values must be double
+            tab-separated.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – A line in *vdw* has an incorrect radius type for an atom.
+
+   Note: The van der Waals radii file defines the radius values for each
+      atom by residue and when not defined, it uses a generic value
+      based on the atom type (see *van der Waals file template*).
+      The package contains a built-in van der Waals radii file: *vdw.dat*.
+
+**SERD.read_pdb(fn: Union[str, pathlib.Path], vdw: Optional[Dict[str, Dict[str, float]]] = None) -> numpy.ndarray**
+
+   Reads PDB file into numpy.ndarrays.
+
+   :Parameters:      
+      * **fn** (*Union**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_*]*) – A path to PDB file.
+
+      * **vdw** (*Dict**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, **Dict**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`float <https://docs.python.org/3/library/functions.html#float>`_*]**]**, **optional*) – A dictionary containing radii values, by default None. If None, use output of *pyKVFinder.read_vdw()*.
+
+   :Returns:         
+      **atomic** – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+      and radius) for each atom.
+
+   :Return type:     
+      numpy.ndarray
+
+   :Raises:          
+      `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *fn* must be a string or a pathlib.Path.
+
+   Note: The van der Waals radii file defines the radius values for each atom
+      by residue and when not defined, it uses a generic value based on the
+      atom type. The function by default loads the built-in van der Waals radii
+      file: *vdw.dat*.
+
+**SERD.get_vertices(atomic: numpy.ndarray, probe: Union[float, int] = 1.4, step: Union[float, int] = 0.6) -> numpy.ndarray**
+
+   Gets 3D grid vertices.
+
+   :Parameters:      
+      * **atomic** (*numpy.ndarray*) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+        and radius) for each atom.
+
+      * **probe** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Probe size (A), by default 4.0.
+
+      * **step** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Grid spacing (A), by default 0.6.
+
+   :Returns:         
+      **vertices** – A numpy.ndarray with xyz vertices coordinates
+      (origin, X-axis, Y-axis, Z-axis).
+
+   :Return type:     
+      numpy.ndarray
+
+**SERD.surface(atomic: numpy.ndarray, surface: Literal[VDW, SES, SAS] = 'SES', step: Union[float, int] = 0.6, probe: Union[float, int] = 1.4, nthreads: Optional[int] = None, verbose: bool = False) -> numpy.ndarray**
+
+   Defines the solvent-exposed surface of a target biomolecule.
+
+   :Parameters:      
+      * **atomic** (*numpy.ndarray*) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+        and radius) for each atom.
+
+      * **surface** (*Literal**[**"VDW"**, **"SES"**, **"SAS"**]**, **optional*) – Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface)
+        or SAS (Solvent Accessible Surface), by default “SES”.
+
+      * **step** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Grid spacing (A), by default 0.6.
+
+      * **probe** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
+
+      * **nthreads** (*Optional**[*`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Number of threads, by default None. If None, the number of threads is
+        *os.cpu_count() - 1*.
+
+      * **verbose** (`bool <https://docs.python.org/3/library/functions.html#bool>`_*, **optional*) – Print extra information to standard output, by default False.
+
+   :Returns:         
+      **surface** – Surface points in the 3D grid (surface[nx, ny, nz]).
+      Surface array has integer labels in each positions, that are:
+
+      ..
+
+         * -1: solvent points;
+
+         * 0: biomolecule points;
+
+         * 1: solvent-exposed surface points.
+
+         Enclosed regions are considered biomolecule points.
+
+   :Return type:     
+      numpy.ndarray
+
+   :Raises:          
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *atomic* must be a numpy.ndarray.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *atomic* has incorrect shape. It must be (n, 8).
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *surface* must be a *VDW*, *SES* or *SAS*.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *step* must be a positive real number.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *step* must be a positive real number.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *probe* must be a non-negative real number.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *probe* must be a non-negative real number.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *nthreads* must be a positive integer.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *nthreads* must be a positive integer.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *verbose* must be a boolean.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *probe* must be a positive real number, when SES or SAS is set.
+
+**SERD.interface(surface: numpy.ndarray, atomic: numpy.ndarray, ignore_backbone: bool = True, step: Union[float, int] = 0.6, probe: Union[float, int] = 1.4, nthreads: Optional[int] = None, verbose: bool = False) -> List[List[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]**
+
+   Identify solvent-exposed residues based on a target solvent-exposed surface
+   and atomic information of a biomolecule (residue number, chain identifier, residue
+   name, xyz coordinates, radius).
+
+   :Parameters:      
+      * **surface** (*numpy.ndarray*) – 
+
+        Surface points in the 3D grid (surface[nx, ny, nz]).
+        Surface array has integer labels in each positions, that are:
+
+        ..
+
+           * -1: solvent points;
+
+           * 0: biomolecule points;
+
+           * 1: solvent-exposed surface points.
+
+           Enclosed regions are considered biomolecule points.
+
+      * **atomic** (*numpy.ndarray*) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+        and radius) for each atom.
+
+      * **ignore_backbone** (`bool <https://docs.python.org/3/library/functions.html#bool>`_*, **optional*) – Whether to ignore backbone atoms (C, CA, N, O) when defining interface residues, by default True.
+
+      * **step** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Grid spacing (A), by default 0.6.
+
+      * **probe** (*Union**[*`float <https://docs.python.org/3/library/functions.html#float>`_*, *`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Probe size (A) to define SES and SAS representations, by default 1.4.
+
+      * **nthreads** (*Optional**[*`int <https://docs.python.org/3/library/functions.html#int>`_*]**, **optional*) – Number of threads, by default None. If None, the number of threads is
+        *os.cpu_count() - 1*.
+
+      * **verbose** (`bool <https://docs.python.org/3/library/functions.html#bool>`_*, **optional*) – Print extra information to standard output, by default False.
+
+   :Returns:         
+      **residues** – A list of solvent-exposed residues.
+
+   :Return type:     
+      List[List[`str <https://docs.python.org/3/library/stdtypes.html#str>`_]]
+
+   :Raises:          
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *surface* must be a numpy.ndarray.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *surface* has the incorrect shape. It must be (nx, ny, nz).
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *atomic* must be a numpy.ndarray.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *atomic* has incorrect shape. It must be (n, 8).
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *ignore_backbone* must be a boolean.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *step* must be a positive real number.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *probe* must be a non-negative real number.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *probe* must be a non-negative real number.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *nthreads* must be a positive integer.
+
+      * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *nthreads* must be a positive integer.
+
+      * `TypeError <https://docs.python.org/3/library/exceptions.html#TypeError>`_ – *verbose* must be a boolean.
+
+**SERD.save(residues: List[List[str]], fn: Union[str, pathlib.Path] = 'residues.pickle')**
+
+   Save list of solvent-exposed residues to binary pickle file.
+
+   :Parameters:      
+      * **residues** (*List**[**List**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*]**]*) – A list of solvent-exposed residues.
+
+      * **fn** (*Union**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_*]**, **optional*) – A path to pickle file, by default “residues.pickle”
+
+**SERD.save_session(target: Union[str, pathlib.Path], residues: List[List[str]], fn: Union[str, pathlib.Path] = 'residues.pse')**
+
+   Save a PyMOL session with the solvent-exposed residues (shown as red sticks) and
+   the target biomolecular structure (shown as cartoon).
+
+   :Parameters:      
+      * **target** (*Union**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_*]*) – A path to PDB or XYZ file of a target biomolecular structure.
+
+      * **residues** (*List**[**List**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*]**]*) – A list of solvent-exposed residues.
+
+      * **fn** (*Union**[*`str <https://docs.python.org/3/library/stdtypes.html#str>`_*, *`pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_*]**, **optional*) – A path to a PyMOL session file, by default “residues.pse”
 
 *******
 License
