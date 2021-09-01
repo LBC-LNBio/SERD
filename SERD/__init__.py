@@ -18,12 +18,13 @@ __license__ = "GNU GPL-3.0 License"
 import os
 import pathlib
 import numpy
-from pyKVFinder import read_vdw
+from pyKVFinder import read_vdw, read_xyz
 from pyKVFinder.grid import _get_sincos, _get_dimensions
 from typing import Union, Optional, Literal, List, Dict
 
 __all__ = [
     "read_vdw",
+    "read_xyz",
     "read_pdb",
     "get_vertices",
     "_get_sincos",
