@@ -4,9 +4,6 @@
 #include <math.h>
 #include <omp.h>
 
-#define min(x, y) (((x) < (y)) ? (x) : (y))
-#define max(x, y) (((x) > (y)) ? (x) : (y))
-
 /******* sincos ******
 * sincos[0] = sin a  *
 * sincos[1] = cos a  *
@@ -210,7 +207,7 @@ void ses(int *grid, int nx, int ny, int nz, double step, double probe, int nthre
     }
 }
 
-/* Solvent-exposed surface detection */
+/* Surface points detection */
 
 /*
  * Function: define_surface_points
@@ -222,11 +219,11 @@ void ses(int *grid, int nx, int ny, int nz, double step, double probe, int nthre
  * nx: x grid units
  * ny: y grid units
  * nz: z grid units
- * i: x coordinate of cavity point
- * j: y coordinate of cavity point
- * k: z coordinate of cavity point
+ * i: x coordinate of point
+ * j: y coordinate of point
+ * k: z coordinate of point
  * 
- * returns: surface point (1) or medium point (-1)
+ * returns: surface point (1) or solvent point (-1)
  */
 int define_surface_points(int *grid, int nx, int ny, int nz, int i, int j, int k)
 {
@@ -281,23 +278,25 @@ void filter_surface(int *grid, int nx, int ny, int nz, int nthreads)
     }
 }
 
+/* Enclosed points removal */
+
 /*
- * Function: define_surface_points
- * -------------------------------
+ * Function: remove_noise_points
+ * -----------------------------
  * 
- * Identify surface points based on neighboring points
+ * Identify enclosed surface points based on neighboring points
  * 
  * grid: 3D grid
  * nx: x grid units
  * ny: y grid units
  * nz: z grid units
- * i: x coordinate of cavity point
- * j: y coordinate of cavity point
- * k: z coordinate of cavity point
+ * i: x coordinate of point
+ * j: y coordinate of point
+ * k: z coordinate of point
  * 
- * returns: surface point (1) or medium point (-1)
+ * returns: surface point (1) or solvent point (-1)
  */
-int remove_enclosed_points(int *grid, int nx, int ny, int nz, int i, int j, int k)
+int remove_noise_points(int *grid, int nx, int ny, int nz, int i, int j, int k)
 {
     int x, y, z;
 
@@ -317,10 +316,10 @@ int remove_enclosed_points(int *grid, int nx, int ny, int nz, int i, int j, int 
 }
 
 /*
- * Function: filter_surface
- * ------------------------
+ * Function: filter_noise_points
+ * -----------------------------
  * 
- * Inspect 3D grid and mark detected surface points on a surface 3D grid
+ * Inspect 3D grid and remove enclosed points on a surface 3D grid
  * 
  * grid: 3D grid
  * surface: surface points 3D grid
@@ -330,7 +329,7 @@ int remove_enclosed_points(int *grid, int nx, int ny, int nz, int i, int j, int 
  * nthreads: number of threads for OpenMP
  * 
  */
-void filter_enclosed_regions(int *grid, int nx, int ny, int nz, int nthreads)
+void filter_noise_points(int *grid, int nx, int ny, int nz, int nthreads)
 {
     int i, j, k;
 
@@ -346,7 +345,181 @@ void filter_enclosed_regions(int *grid, int nx, int ny, int nz, int nthreads)
                 for (k = 0; k < nz; k++)
                     if (grid[k + nz * (j + (ny * i))] == 1)
                         // Remove enclosed regions
-                        grid[k + nz * (j + (ny * i))] = remove_enclosed_points(grid, nx, ny, nz, i, j, k);
+                        grid[k + nz * (j + (ny * i))] = remove_noise_points(grid, nx, ny, nz, i, j, k);
+    }
+}
+
+/* Enclosed points removal - flood and fill algorithm */
+
+/*
+ * Variable: points
+ * ----------------
+ * 
+ * Accumulate number of points while clustering surface points
+ *
+ */
+int points;
+
+/*
+ * Variable: big
+ * 
+ * Flag that marks big surfaces on clustering
+ * 
+ */
+int big;
+
+/*
+ * Function: check_unclustered_neighbours
+ * --------------------------------------
+ * 
+ * Checks if a surface point on the grid is next to a unclustered surface point (1)
+ * 
+ * grid: 3D grid
+ * dx: x grid units
+ * dy: y grid units
+ * dz: z grid units
+ * i: x coordinate of point
+ * j: y coordinate of point
+ * k: z coordinate of point
+ * 
+ * returns: true (int 1) or false (int 0)
+ */
+int check_unclustered_neighbours(int *grid, int nx, int ny, int nz, int i, int j, int k)
+{
+    int x, y, z;
+
+    // Loop around neighboring points
+    for (x = i - 1; x <= i + 1; x++)
+        for (y = j - 1; y <= j + 1; y++)
+            for (z = k - 1; z <= k + 1; z++)
+            {
+                // Check if point is inside 3D grid
+                if (x < 0 || y < 0 || z < 0 || x > nx - 1 || y > ny - 1 || z > nz - 1)
+                    ;
+                else if (grid[z + nz * (y + (ny * x))] > 1)
+                    return grid[z + nz * (y + (ny * x))];
+            }
+    return 0;
+}
+
+/*
+ * Function: flood_and_fill
+ * ------------------------
+ * 
+ * Recursive flood and fill algorithm
+ * 
+ * grid: surface 3D grid
+ * nx: x grid units
+ * ny: y grid units
+ * nz: z grid units
+ * i: x coordinate of point
+ * j: y coordinate of point
+ * k: z coordinate of point
+ * tag: integer identifier
+ * 
+ */
+void flood_and_fill(int *grid, int nx, int ny, int nz, int i, int j, int k, int tag)
+{
+    int x, y, z;
+
+    if (i == 0 || i == nx - 1 || j == 0 || j == ny - 1 || k == 0 || k == nz - 1)
+        return;
+
+    if (grid[k + nz * (j + (ny * i))] == 1 && !big)
+    {
+        grid[k + nz * (j + (ny * i))] = tag;
+        points++;
+
+        if (points == 10000)
+            big = 1;
+
+        if (!big)
+        {
+#pragma omp taskloop shared(i, j, k, nx, ny, nz, tag, grid), private(x, y, z)
+            for (x = i - 1; x <= i + 1; x++)
+                for (y = j - 1; y <= j + 1; y++)
+                    for (z = k - 1; z <= k + 1; z++)
+                        flood_and_fill(grid, nx, ny, nz, x, y, z, tag);
+        }
+    }
+}
+
+/*
+ * Function: filter_enclosed_regions
+ * ---------------------------------
+ * 
+ * Cluster consecutive surface points together and remove enclosed surface points
+ * 
+ * grid: surface 3D grid
+ * nx: x grid units
+ * ny: y grid units
+ * nz: z grid units
+ * step: 3D grid spacing (A)
+ * nthreads: number of threads for OpenMP
+ * 
+ */
+void filter_enclosed_regions(int *grid, int nx, int ny, int nz, double step, int nthreads)
+{
+    int i, j, k, i2, j2, k2, tag, aux;
+
+    // Set number of threads in OpenMP
+    omp_set_num_threads(nthreads);
+    omp_set_nested(1);
+
+    // Initialize variables
+    tag = 1;
+    aux = 0;
+    big = 0;
+
+    for (i = 0; i < nx; i++)
+        for (j = 0; j < ny; j++)
+            for (k = 0; k < nz; k++)
+                if (grid[k + nz * (j + (ny * i))] == 1)
+                {
+                    tag++;
+                    points = 0;
+
+                    // Clustering procedure
+                    flood_and_fill(grid, nx, ny, nz, i, j, k, tag);
+                    aux = points;
+
+                    // Loop for big cavities
+                    while (big)
+                    {
+                        aux = 0;
+
+                        for (i2 = 0; i2 < nx; i2++)
+                            for (j2 = 0; j2 < ny; j2++)
+                                for (k2 = 0; k2 < nz; k2++)
+                                {
+                                    big = 0;
+                                    aux += points;
+                                    points = 0;
+                                    if (grid[k2 + nz * (j2 + (ny * i2))] == 1 && check_unclustered_neighbours(grid, nx, ny, nz, i2, j2, k2) == tag)
+                                        flood_and_fill(grid, nx, ny, nz, i2, j2, k2, tag);
+                                }
+                    }
+                    points = aux;
+                }
+
+    // Convert tags
+    // * 2 -> 1
+    // * >2 -> -1
+    if (tag > 1)
+    {
+#pragma omp parallel default(none), shared(grid, nx, ny, nz), private(i, j, k)
+        {
+#pragma omp for collapse(3) schedule(static)
+            for (i = 0; i < nx; i++)
+                for (j = 0; j < ny; j++)
+                    for (k = 0; k < nz; k++)
+                    {
+                        if (grid[k + nz * (j + (ny * i))] == 2)
+                            grid[k + nz * (j + (ny * i))] = 1;
+                        else if (grid[k + nz * (j + (ny * i))] > 2)
+                            grid[k + nz * (j + (ny * i))] = 0;
+                    }
+        }
     }
 }
 
@@ -356,7 +529,7 @@ void filter_enclosed_regions(int *grid, int nx, int ny, int nz, int nthreads)
  * 
  * Define solvent-exposed surface from a target biomolecule
  * 
- * grid: 3D grid
+ * grid: surface 3D grid
  * nx: x grid units
  * ny: y grid units
  * nz: z grid units
@@ -369,9 +542,10 @@ void filter_enclosed_regions(int *grid, int nx, int ny, int nz, int nthreads)
  * nvalues: number of sin and cos (sina, cosa, sinb, cosb)
  * step: 3D grid spacing (A)
  * probe: Probe size (A)
- * is_ses: surface mode (1: SES or 0: SAS)
+ * is_ses: surface mode (1: SES/VDW or 0: SAS)
  * nthreads: number of threads for OpenMP
  * verbose: print extra information to standard output
+ * 
  */
 void _surface(int *grid, int size, int nx, int ny, int nz, double *atoms, int natoms, int xyzr, double *reference, int ndims, double *sincos, int nvalues, double step, double probe, int is_ses, int nthreads, int verbose)
 {
@@ -395,7 +569,8 @@ void _surface(int *grid, int size, int nx, int ny, int nz, double *atoms, int na
 
     if (verbose)
         fprintf(stdout, "> Filtering enclosed regions\n");
-    filter_enclosed_regions(grid, nx, ny, nz, nthreads);
+    filter_enclosed_regions(grid, nx, ny, nz, step, nthreads);
+    filter_noise_points(grid, nx, ny, nz, nthreads);
 }
 
 /* Solvent-exposed residues detection */
@@ -473,7 +648,7 @@ void insert(res **head, res *res_new)
  * 
  * Retrieve interface residues from solvent-exposed surface
  * 
- * cavities: cavities 3D grid
+ * grid: cavities 3D grid
  * nx: x grid units
  * ny: y grid units
  * nz: z grid units
@@ -486,9 +661,9 @@ void insert(res **head, res *res_new)
  * sincos: sin and cos of 3D grid angles
  * nvalues: number of sin and cos (sina, cosa, sinb, cosb)
  * step: 3D grid spacing (A)
- * probe_in: Probe In size (A)
- * ncav: number of cavities
+ * probe: Probe size (A)
  * nthreads: number of threads for OpenMP
+ * verbose: print information to stdout
  * 
  * returns: array of strings with interface residues
  */
