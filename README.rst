@@ -412,7 +412,7 @@ Save list of solvent-exposed residues to binary pickle file.
 **SERD.save_session(target, residues, fn='residues.pse')**
 
 Save a PyMOL session with the solvent-exposed residues (shown as red sticks) and
-the target biomolecular structure (shown as cartoon).
+the target biomolecular structure (shown as sticks).
 
 :Parameters:     
 
