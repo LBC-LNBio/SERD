@@ -18,8 +18,10 @@ __license__ = "GNU GPL-3.0 License"
 import os
 import pathlib
 import numpy
+import networkx
 from pyKVFinder import read_vdw, read_xyz
 from pyKVFinder.grid import _get_sincos, _get_dimensions
+from scipy.spatial.distance import cdist
 from typing import Union, Optional, Literal, List, Dict
 
 __all__ = [
@@ -34,6 +36,7 @@ __all__ = [
     "detect",
     "save",
     "save_session",
+    "r2g",
 ]
 
 
@@ -669,3 +672,168 @@ def save_session(
 
     # Save PyMOL session
     cmd.save(fn)
+
+
+def _get_atom_selection(
+    atomic: numpy.ndarray, selection: Literal["CA", "CB"]
+) -> numpy.ndarray:
+    """Select atoms in atomic data.
+
+    Parameters
+    ----------
+    atomic : numpy.ndarray
+        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+        and radius) for each atom.
+    selection : {"CA", "CB"}, optional
+        Atomic selection, by default "CB". Keywords options are:
+
+            * 'CA': Select alfa-carbon;
+
+            * 'CB': Select beta-carbon, except for glycine which selects the alfa-carbon.
+
+    Returns
+    -------
+    atomic
+        A numpy array with selected atomic data.
+    """
+    # Get indexes
+    indexes = numpy.where(atomic[:, 3] == selection)[0]
+
+    # If CB chosen for selection, use CA for GLY
+    if selection == "CB":
+        indexes = numpy.append(
+            indexes, numpy.where((atomic[:, 2] == "GLY") & (atomic[:, 3] == "CA"))
+        )
+
+    # Get atomic of selection
+    atomic = atomic[numpy.sort(indexes)]
+
+    return atomic
+
+
+def _calculate_distance(atomic: numpy.ndarray) -> numpy.ndarray:
+    """Calculate distance between atoms.
+
+    Parameters
+    ----------
+    atomic : numpy.ndarray
+        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+        and radius) for each atom.
+
+    Returns
+    -------
+    distance : numpy.ndarray
+        Distance between atoms of atomic based on indexes.
+    """
+    atomic = atomic.astype(float)
+    distance = cdist(atomic, atomic, metric="euclidean")
+    return distance
+
+
+def _keep_solvent_exposed_residues(
+    adjacency: numpy.ndarray, residues: List[List[str]], atomic: numpy.ndarray
+) -> numpy.ndarray:
+    """Keep solvent-exposed residues on adjacency matrix. Consequently, it removes residues
+    that are not solvent-exposed residues of adjacency matrix.
+
+    Parameters
+    ----------
+    adjacency : numpy.ndarray
+        Adjacency matrix defining contacts between residues.
+    residues : List[List[str]]
+        A list of solvent-exposed residues.
+    atomic : numpy.ndarray
+        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+        and radius) for each atom.
+
+    Returns
+    -------
+    adjacency : numpy.ndarray
+        Adjacency matrix defining contacts between solvent-exposed residues.
+    """
+    # Create empty mask
+    mask = numpy.empty(0, dtype=int)
+
+    # Append index of each residue
+    for res in residues:
+        mask = numpy.append(
+            mask,
+            numpy.where((atomic[:, 0] == res[0]) & (atomic[:, 1] == res[1]))[0],
+        )
+
+    # Get mask of not solvent exposed residues
+    omask = [x for x in list(range(atomic.shape[0])) if x not in set(mask)]
+
+    # Keep solvent exposed residues
+    adjacency[omask, :] = 0
+    adjacency[:, omask] = 0
+
+    return adjacency
+
+
+def r2g(
+    residues: List[List[str]],
+    atomic: numpy.ndarray,
+    selection: Literal["CA", "CB"] = "CB",
+    cutoff: Optional[float] = None,
+) -> networkx.classes.graph.Graph:
+    """Create a graph from a list of solvent-exposed residues.
+
+    Parameters
+    ----------
+    residues : List[List[str]]
+        A list of solvent-exposed residues.
+    atomic : numpy.ndarray
+        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+        and radius) for each atom.
+    selection : {"CA", "CB"}, optional
+        Atomic selection, by default "CB". Keywords options are:
+
+            * 'CA': Select alfa-carbon;
+
+            * 'CB': Select beta-carbon, except for glycine which selects the alfa-carbon.
+    cutoff : Optional[float], optional
+        A limit of distance to define an edge between two solvent-exposed residues, by default None.
+        If None, cutoff depends on selection argument. If "CA", cutoff is 10.0. If "CB", cutoff is 8.0.
+
+    Returns
+    -------
+    networkx.classes.graph.Graph
+        A graph of solvent-exposed residues with edges defined by a distance smaller than the cutoff.
+
+    Raises
+    ------
+    ValueError
+        `selection` must be `CA` or `CB`.
+
+    Note
+    ----
+    Cutoff for beta-carbon is based on CAPRI round 28. For more details, refer to 
+    https://www.ebi.ac.uk/msd-srv/capri/round28/round28.html.
+    """
+    # Check arguments
+    if cutoff is None:
+        if selection == "CA":
+            cutoff = 10.0
+        elif selection == "CB":
+            cutoff = 8.0
+        else:
+            raise ValueError("`selection` must be `CA` or `CB`.")
+
+    # Get atom selection
+    atomic = _get_atom_selection(atomic, selection=selection)
+
+    # Calculate distance
+    distance = _calculate_distance(atomic[:, 4:7])
+
+    # Calculate adjacency matrix
+    adjacency = numpy.logical_and(distance > 0.0, distance < 8.0).astype(int)
+
+    # Keep solvent exposed residues
+    adjacency = _keep_solvent_exposed_residues(adjacency, residues, atomic)
+
+    # Create networkx.Graph
+    G = networkx.Graph()
+    G.add_edges_from(numpy.argwhere(adjacency))
+
+    return G
