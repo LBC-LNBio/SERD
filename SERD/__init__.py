@@ -827,7 +827,7 @@ def r2g(
     distance = _calculate_distance(atomic[:, 4:7])
 
     # Calculate adjacency matrix
-    adjacency = numpy.logical_and(distance > 0.0, distance < 8.0).astype(int)
+    adjacency = numpy.logical_and(distance > 0.0, distance < cutoff).astype(int)
 
     # Keep solvent exposed residues
     adjacency = _keep_solvent_exposed_residues(adjacency, residues, atomic)
