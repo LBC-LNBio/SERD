@@ -422,6 +422,40 @@ the target biomolecular structure (shown as sticks).
 
   * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to a PyMOL session file, by default “residues.pse”
 
+**SERD.r2g(residues, atomic, selection="CB", cutoff=None)**
+
+Create a graph from a list of solvent-exposed residues.
+
+:Parameters:      
+  
+  * **residues** – A list of solvent-exposed residues.
+
+  * **atomic** (numpy.ndarray) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+    and radius) for each atom.
+
+  * **selection** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["CA", "CB"], *optional*)
+
+    Atomic selection, by default "CB". Keywords options are:
+    
+    * 'CA': Select alfa-carbon;
+
+    * 'CB': Select beta-carbon, except for glycine which selects the alfa-carbon.
+
+  * **cutoff** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_], *optional*) – A limit of distance to define an edge between two solvent-exposed residues, by default None. If None, cutoff depends on selection argument. If "CA", cutoff is 10.0. If "CB", cutoff is 8.0
+
+:Returns:         
+  **G** – A graph of solvent-exposed residues with edges defined by a distance smaller than the cutoff.
+
+:Return type:     
+  `networkx.classes.graph.Graph <https://networkx.org/documentation/stable/reference/classes/index.html?highlight=networkx%20classes%20graph%20graph>`_
+
+:Raises:          
+  * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *selection* must be *CA* or *CB*.
+
+.. note::
+  
+  Cutoff for beta-carbon is based on CAPRI round 28. For more details, refer to https://www.ebi.ac.uk/msd-srv/capri/round28/round28.html.
+
 *******
 License
 *******
