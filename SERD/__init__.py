@@ -696,19 +696,12 @@ def _get_atom_selection(
     atomic
         A numpy array with selected atomic data.
     """
-    # Get indexes
-    indexes = numpy.where(atomic[:, 3] == selection)[0]
-
-    # If CB chosen for selection, use CA for GLY
     if selection == "CB":
-        indexes = numpy.append(
-            indexes, numpy.where((atomic[:, 2] == "GLY") & (atomic[:, 3] == "CA"))
-        )
+        mask = numpy.logical_or((atomic[:, 2:4]==[['GLY', 'CA']]).all(-1), atomic[:, 3]=='CB')
+    else:
+        mask = atomic[:, 3]=='CA'
 
-    # Get atomic of selection
-    atomic = atomic[numpy.sort(indexes)]
-
-    return atomic
+    return atomic[mask]
 
 
 def _calculate_distance(atomic: numpy.ndarray) -> numpy.ndarray:
@@ -730,47 +723,6 @@ def _calculate_distance(atomic: numpy.ndarray) -> numpy.ndarray:
     return distance
 
 
-def _keep_solvent_exposed_residues(
-    adjacency: numpy.ndarray, residues: List[List[str]], atomic: numpy.ndarray
-) -> numpy.ndarray:
-    """Keep solvent-exposed residues on adjacency matrix. Consequently, it removes residues
-    that are not solvent-exposed residues of adjacency matrix.
-
-    Parameters
-    ----------
-    adjacency : numpy.ndarray
-        Adjacency matrix defining contacts between residues.
-    residues : List[List[str]]
-        A list of solvent-exposed residues.
-    atomic : numpy.ndarray
-        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
-        and radius) for each atom.
-
-    Returns
-    -------
-    adjacency : numpy.ndarray
-        Adjacency matrix defining contacts between solvent-exposed residues.
-    """
-    # Create empty mask
-    mask = numpy.empty(0, dtype=int)
-
-    # Append index of each residue
-    for res in residues:
-        mask = numpy.append(
-            mask,
-            numpy.where((atomic[:, 0] == res[0]) & (atomic[:, 1] == res[1]))[0],
-        )
-
-    # Get mask of not solvent exposed residues
-    omask = [x for x in list(range(atomic.shape[0])) if x not in set(mask)]
-
-    # Keep solvent exposed residues
-    adjacency[omask, :] = 0
-    adjacency[:, omask] = 0
-
-    return adjacency
-
-
 def _all_atoms_to_residues(atomic: numpy.ndarray, distance: numpy.ndarray) -> numpy.ndarray:
     """Convert distance between all atoms to minimal distance between residues.
 
@@ -787,22 +739,12 @@ def _all_atoms_to_residues(atomic: numpy.ndarray, distance: numpy.ndarray) -> nu
     residues : numpy.ndarray
         Distance between residues.
     """
-    # Get residues names of atoms
-    atoms = numpy.asarray([f"{atom[0]}{atom[1]}" for atom in atomic])
+    _, i, c = numpy.unique(atomic[:,0:3], return_index=True, return_counts=True, axis=0)
+    counts =  c[numpy.argsort(i)]
+    idx = numpy.sort(i)
+    n_res = len(idx)
 
-    # Get unique residue names
-    resnames = list(dict.fromkeys(atoms))
-
-    # Create empty distance
-    residues = numpy.zeros(distance.shape)
-
-    # Get minimum distance between atoms of residues i and j
-    for i, r1 in enumerate(resnames):
-        idxs = numpy.where(r1 == atoms)[0]
-        tmp = numpy.min(distance[:, idxs], axis=1)
-        for j, r2 in enumerate(resnames):
-            idxs2 = numpy.where(r2 == atoms)[0]
-            residues[i, j] = numpy.min(tmp[idxs2], axis=0)
+    residues = numpy.array([numpy.min(distance[idx[i]:idx[i]+counts[i], idx[j]:idx[j]+counts[j]]) for i in range(n_res) for j in range(n_res)]).reshape((n_res, n_res))
     
     return residues
 
@@ -867,6 +809,10 @@ def r2g(
     if selection != 'all':
         atomic = _get_atom_selection(atomic, selection=selection)
 
+    # Keep solvent exposed residues
+    # https://stackoverflow.com/questions/51352527/check-for-identical-rows-in-different-numpy-arrays
+    atomic = atomic[(atomic[:,0:3][:,None] == residues).all(-1).any(-1)]
+
     # Calculate distance
     distance = _calculate_distance(atomic[:, 4:7])
 
@@ -878,9 +824,6 @@ def r2g(
         adjacency = (distance < cutoff).astype(int)
     else:
         adjacency = numpy.logical_and(distance > 0.0, distance < cutoff).astype(int)
-
-    # Keep solvent exposed residues
-    adjacency = _keep_solvent_exposed_residues(adjacency, residues, atomic)
 
     # Create networkx.Graph
     G = networkx.Graph()
