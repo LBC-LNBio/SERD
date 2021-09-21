@@ -824,23 +824,21 @@ def r2g(
     if selection != "all":
         atomic = _get_atom_selection(atomic, selection=selection)
 
+    # Keep solvent exposed residues
+    # https://stackoverflow.com/questions/51352527/check-for-identical-rows-in-different-numpy-arrays
+    atomic = atomic[(atomic[:, 0:3][:, None] == residues).all(-1).any(-1)]
+
     # Calculate distance
     distance = _calculate_distance(atomic[:, 4:7])
 
     if selection == "all":
         distance = _all_atoms_to_residues(atomic, distance)
-        atomic = _get_atom_selection(atomic, selection=selection)
 
     # Calculate adjacency matrix
     if intraresidual:
         adjacency = (distance < cutoff).astype(int)
     else:
         adjacency = numpy.logical_and(distance > 0.0, distance < cutoff).astype(int)
-
-    # Keep solvent exposed residues
-    # https://stackoverflow.com/questions/51352527/check-for-identical-rows-in-different-numpy-arrays
-    adjacency[:, ~(atomic[:, 0:3][:, None] == residues).all(-1).any(-1)] = 0
-    adjacency[~(atomic[:, 0:3][:, None] == residues).all(-1).any(-1), :] = 0
 
     # Create networkx.Graph
     G = networkx.Graph()
@@ -852,6 +850,7 @@ def r2g(
 def g2pdb(
     graph: networkx.classes.graph.Graph,
     atomic: numpy.ndarray,
+    residues: List[List[str]],
     fn: Union[str, pathlib.Path] = "graph.pdb",
 ):
     """Save a graph to a PDB-formatted file. Each node are represented by the
@@ -864,11 +863,14 @@ def g2pdb(
     atomic : numpy.ndarray
         A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
         and radius) for each atom.
+    residues : List[List[str]]
+        A list of solvent-exposed residues.
     fn : Union[str, pathlib.Path], optional
         A path to a PDB file, by default "graph.pdb".
     """
     # Get atom information of solvent-exposed residues
     atomic = _get_atom_selection(atomic, selection="CA")
+    atomic = atomic[(atomic[:, 0:3][:, None] == residues).all(-1).any(-1)]
 
     # Write nodes to pdb
     with open(fn, "w") as f:

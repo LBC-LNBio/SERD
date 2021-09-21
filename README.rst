@@ -74,7 +74,7 @@ In addition, users can save graph as a PDB file, with nodes represented by the C
 
 .. code:: python
 
-  >>> SERD.g2pdb(graph, atomic, 'graph.pdb')
+  >>> SERD.g2pdb(graph, atomic, residues, 'graph.pdb')
 
 If users prefer, instead of running **SERD.detect** function, users can apply the detection of solvent-exposed residues in a step-by-step fashion. Below, we briefly describe this procedure.
 
@@ -476,7 +476,7 @@ Create a graph from a list of solvent-exposed residues.
   
   Cutoff for beta-carbon is based on CAPRI round 28. For more details, refer to https://www.ebi.ac.uk/msd-srv/capri/round28/round28.html.
 
-**SERD.g2pdb(graph, atomic, fn='graph.pdb')**
+**SERD.g2pdb(graph, atomic, residues, fn='graph.pdb')**
 
   Save a graph to a PDB-formatted file. Each node are represented by the
   CA atom of the residue and edges are represented by CONECT record.
@@ -486,6 +486,8 @@ Create a graph from a list of solvent-exposed residues.
 
     * **atomic** (*numpy.ndarray*) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
       and radius) for each atom.
+
+    * **residues** – A list of solvent-exposed residues.
 
     * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to a PDB file, by default “graph.pdb”.
 
