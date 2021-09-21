@@ -433,7 +433,7 @@ the target biomolecular structure (shown as sticks).
 
   * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to a PyMOL session file, by default “residues.pse”
 
-**SERD.r2g(residues, atomic, selection="CB", cutoff=None)**
+**SERD.r2g(residues, atomic, selection="CB", cutoff=None, intraresidual=False)**
 
 Create a graph from a list of solvent-exposed residues.
 
@@ -444,15 +444,19 @@ Create a graph from a list of solvent-exposed residues.
   * **atomic** (numpy.ndarray) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
     and radius) for each atom.
 
-  * **selection** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["CA", "CB"], *optional*)
+  * **selection** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["CA", "CB", "all"], *optional*)
 
     Atomic selection, by default "CB". Keywords options are:
     
     * 'CA': Select alfa-carbon;
 
-    * 'CB': Select beta-carbon, except for glycine which selects the alfa-carbon.
+    * 'CB': Select beta-carbon, except for glycine which selects the alfa-carbon;
+    
+    * 'all': Select all atoms, distance between residues are the smallest distance between the atoms of these residues.
 
-  * **cutoff** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_], *optional*) – A limit of distance to define an edge between two solvent-exposed residues, by default None. If None, cutoff depends on selection argument. If "CA", cutoff is 10.0. If "CB", cutoff is 8.0
+  * **cutoff** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_], *optional*) – A limit of distance to define an edge between two solvent-exposed residues, by default None. If None, cutoff depends on selection argument. If "CA", cutoff is 10.0. If "CB", cutoff is 8.0. If "all", cutoff is 5.0.
+  
+  * **intraresidual** (`bool <https://docs.python.org/3/library/functions.html#bool>`_, *optional*) – Whether to consider intraresidual contacts to create adjacency matrix, by default False.
 
 :Returns:         
   **G** – A graph of solvent-exposed residues with edges defined by a distance smaller than the cutoff.
@@ -461,7 +465,7 @@ Create a graph from a list of solvent-exposed residues.
   `networkx.classes.graph.Graph <https://networkx.org/documentation/stable/reference/classes/index.html?highlight=networkx%20classes%20graph%20graph>`_
 
 :Raises:          
-  * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *selection* must be *CA* or *CB*.
+  * `ValueError <https://docs.python.org/3/library/exceptions.html#ValueError>`_ – *selection* must be *CA*, *CB*, or *all*.
 
 .. note::
   
