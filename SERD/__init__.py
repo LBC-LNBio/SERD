@@ -637,7 +637,7 @@ def save_session(
     residues : List[List[str]]
         A list of solvent-exposed residues.
     fn : Union[str, pathlib.Path], optional
-        A path to a PyMOL session file, by default "residues.pse"
+        A path to a PyMOL session file, by default "residues.pse".
     """
     import warnings
     from pymol import cmd
@@ -771,7 +771,9 @@ def _keep_solvent_exposed_residues(
     return adjacency
 
 
-def _all_atoms_to_residues(atomic: numpy.ndarray, distance: numpy.ndarray) -> numpy.ndarray:
+def _all_atoms_to_residues(
+    atomic: numpy.ndarray, distance: numpy.ndarray
+) -> numpy.ndarray:
     """Convert distance between all atoms to minimal distance between residues.
 
     Parameters
@@ -803,15 +805,16 @@ def _all_atoms_to_residues(atomic: numpy.ndarray, distance: numpy.ndarray) -> nu
         for j, r2 in enumerate(resnames):
             idxs2 = numpy.where(r2 == atoms)[0]
             residues[i, j] = numpy.min(tmp[idxs2], axis=0)
-    
+
     return residues
+
 
 def r2g(
     residues: List[List[str]],
     atomic: numpy.ndarray,
     selection: Literal["CA", "CB"] = "CB",
     cutoff: Optional[float] = None,
-    intraresidual: bool = False
+    intraresidual: bool = False,
 ) -> networkx.classes.graph.Graph:
     """Create a graph from a list of solvent-exposed residues.
 
@@ -829,8 +832,8 @@ def r2g(
 
             * 'CB': Select beta-carbon, except for glycine which selects the alfa-carbon;
 
-            * 'all': Select all atoms, distance between residues are the smallest distance between
-            the atoms of these residues.
+            * 'all': Select all atoms, distance between residues are the smallest distance between the atoms of these residues.
+
     cutoff : Optional[float], optional
         A limit of distance to define an edge between two solvent-exposed residues, by default None.
         If None, cutoff depends on selection argument. If "CA", cutoff is 10.0. If "CB", cutoff is 8.0.
@@ -849,7 +852,7 @@ def r2g(
 
     Note
     ----
-    Cutoff for beta-carbon is based on CAPRI round 28. For more details, refer to 
+    Cutoff for beta-carbon is based on CAPRI round 28. For more details, refer to
     https://www.ebi.ac.uk/msd-srv/capri/round28/round28.html.
     """
     # Check arguments
@@ -858,19 +861,19 @@ def r2g(
             cutoff = 10.0
         elif selection == "CB":
             cutoff = 8.0
-        elif selection == 'all':
+        elif selection == "all":
             cutoff = 5.0
         else:
             raise ValueError("`selection` must be `CA`, `CB`, or `all`.")
 
     # Get atom selection
-    if selection != 'all':
+    if selection != "all":
         atomic = _get_atom_selection(atomic, selection=selection)
 
     # Calculate distance
     distance = _calculate_distance(atomic[:, 4:7])
 
-    if selection == 'all':
+    if selection == "all":
         distance = _all_atoms_to_residues(atomic, distance)
 
     # Calculate adjacency matrix
@@ -887,3 +890,44 @@ def r2g(
     G.add_edges_from(numpy.argwhere(adjacency))
 
     return G
+
+
+def g2pdb(
+    graph: networkx.classes.graph.Graph,
+    atomic: numpy.ndarray,
+    fn: Union[str, pathlib.Path] = "graph.pdb",
+):
+    """Save a graph to a PDB-formatted file. Each node are represented by the
+    CA atom of the residue and edges are represented by CONECT record.
+
+    Parameters
+    ----------
+    graph : networkx.classes.graph.Graph
+        A graph of solvent-exposed residues with edges defined by a distance smaller than the cutoff.
+    atomic : numpy.ndarray
+        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+        and radius) for each atom.
+    fn : Union[str, pathlib.Path], optional
+        A path to a PDB file, by default "graph.pdb".
+    """
+    # Get atom information of solvent-exposed residues
+    atomic = _get_atom_selection(atomic, selection="CA")
+
+    # Write nodes to pdb
+    with open(fn, "w") as f:
+        for n_atom, atom in enumerate(atomic):
+            if n_atom in list(graph.nodes):
+                atomname = atom[3].center(4)
+                resname = atom[2].ljust(3)
+                chain = atom[1].rjust(1)
+                resnum = atom[0].rjust(4)
+                x = str("%8.3f" % (float(atom[4]))).rjust(8)
+                y = str("%8.3f" % (float(atom[5]))).rjust(8)
+                z = str("%8.3f" % (float(atom[6]))).rjust(8)
+                f.write(
+                    f"ATOM  {n_atom+1:5d} {atomname} {resname} {chain}{resnum}    {x}{y}{z}  1.00100.00\n"
+                )
+        for edge in graph.edges:
+            if edge[0] != edge[1]:
+                f.write(f"CONECT{str(edge[0]+1).rjust(5)}{str(edge[1]+1).rjust(5)}\n")
+        f.write("END\n")
