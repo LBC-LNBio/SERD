@@ -771,11 +771,47 @@ def _keep_solvent_exposed_residues(
     return adjacency
 
 
+def _all_atoms_to_residues(atomic: numpy.ndarray, distance: numpy.ndarray) -> numpy.ndarray:
+    """Convert distance between all atoms to minimal distance between residues.
+
+    Parameters
+    ----------
+    atomic : numpy.ndarray
+        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+        and radius) for each atom.
+    distance : numpy.ndarray
+        Distance between all atoms.
+
+    Returns
+    -------
+    residues : numpy.ndarray
+        Distance between residues.
+    """
+    # Get residues names of atoms
+    atoms = numpy.asarray([f"{atom[0]}{atom[1]}" for atom in atomic])
+
+    # Get unique residue names
+    resnames = list(dict.fromkeys(atoms))
+
+    # Create empty distance
+    residues = numpy.zeros(distance.shape)
+
+    # Get minimum distance between atoms of residues i and j
+    for i, r1 in enumerate(resnames):
+        idxs = numpy.where(r1 == atoms)[0]
+        tmp = numpy.min(distance[:, idxs], axis=1)
+        for j, r2 in enumerate(resnames):
+            idxs2 = numpy.where(r2 == atoms)[0]
+            residues[i, j] = numpy.min(tmp[idxs2], axis=0)
+    
+    return residues
+
 def r2g(
     residues: List[List[str]],
     atomic: numpy.ndarray,
     selection: Literal["CA", "CB"] = "CB",
     cutoff: Optional[float] = None,
+    intraresidual: bool = False
 ) -> networkx.classes.graph.Graph:
     """Create a graph from a list of solvent-exposed residues.
 
@@ -786,15 +822,20 @@ def r2g(
     atomic : numpy.ndarray
         A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
         and radius) for each atom.
-    selection : {"CA", "CB"}, optional
+    selection : {"CA", "CB", "all"}, optional
         Atomic selection, by default "CB". Keywords options are:
 
             * 'CA': Select alfa-carbon;
 
-            * 'CB': Select beta-carbon, except for glycine which selects the alfa-carbon.
+            * 'CB': Select beta-carbon, except for glycine which selects the alfa-carbon;
+
+            * 'all': Select all atoms, distance between residues are the smallest distance between
+            the atoms of these residues.
     cutoff : Optional[float], optional
         A limit of distance to define an edge between two solvent-exposed residues, by default None.
         If None, cutoff depends on selection argument. If "CA", cutoff is 10.0. If "CB", cutoff is 8.0.
+    intraresidual : bool, optional
+        Whether to consider intraresidual contacts to create adjacency matrix, by default False.
 
     Returns
     -------
@@ -804,7 +845,7 @@ def r2g(
     Raises
     ------
     ValueError
-        `selection` must be `CA` or `CB`.
+        `selection` must be `CA`, `CB`, or `all`.
 
     Note
     ----
@@ -817,17 +858,26 @@ def r2g(
             cutoff = 10.0
         elif selection == "CB":
             cutoff = 8.0
+        elif selection == 'all':
+            cutoff = 5.0
         else:
-            raise ValueError("`selection` must be `CA` or `CB`.")
+            raise ValueError("`selection` must be `CA`, `CB`, or `all`.")
 
     # Get atom selection
-    atomic = _get_atom_selection(atomic, selection=selection)
+    if selection != 'all':
+        atomic = _get_atom_selection(atomic, selection=selection)
 
     # Calculate distance
     distance = _calculate_distance(atomic[:, 4:7])
 
+    if selection == 'all':
+        distance = _all_atoms_to_residues(atomic, distance)
+
     # Calculate adjacency matrix
-    adjacency = numpy.logical_and(distance > 0.0, distance < cutoff).astype(int)
+    if intraresidual:
+        adjacency = (distance < cutoff).astype(int)
+    else:
+        adjacency = numpy.logical_and(distance > 0.0, distance < cutoff).astype(int)
 
     # Keep solvent exposed residues
     adjacency = _keep_solvent_exposed_residues(adjacency, residues, atomic)
