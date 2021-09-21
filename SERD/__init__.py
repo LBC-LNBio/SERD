@@ -824,21 +824,23 @@ def r2g(
     if selection != "all":
         atomic = _get_atom_selection(atomic, selection=selection)
 
-    # Keep solvent exposed residues
-    # https://stackoverflow.com/questions/51352527/check-for-identical-rows-in-different-numpy-arrays
-    atomic = atomic[(atomic[:, 0:3][:, None] == residues).all(-1).any(-1)]
-
     # Calculate distance
     distance = _calculate_distance(atomic[:, 4:7])
 
     if selection == "all":
         distance = _all_atoms_to_residues(atomic, distance)
+        atomic = _get_atom_selection(atomic, selection=selection)
 
     # Calculate adjacency matrix
     if intraresidual:
         adjacency = (distance < cutoff).astype(int)
     else:
         adjacency = numpy.logical_and(distance > 0.0, distance < cutoff).astype(int)
+
+    # Keep solvent exposed residues
+    # https://stackoverflow.com/questions/51352527/check-for-identical-rows-in-different-numpy-arrays
+    adjacency[:, ~(atomic[:, 0:3][:, None] == residues).all(-1).any(-1)] = 0
+    adjacency[~(atomic[:, 0:3][:, None] == residues).all(-1).any(-1), :] = 0
 
     # Create networkx.Graph
     G = networkx.Graph()
