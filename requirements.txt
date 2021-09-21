@@ -1,5 +1,4 @@
 networkx>=2.6.3
 numpy>=1.20.3
 pyKVFinder>=0.2.2
-pymol>=2.3.0
 scipy>=1.7.1
