@@ -356,9 +356,7 @@ name, xyz coordinates, radius).
 
 :Parameters:      
 
-  * **surface** (numpy.ndarray) – 
-
-    Surface points in the 3D grid (surface[nx, ny, nz]).
+  * **surface** (numpy.ndarray) – Surface points in the 3D grid (surface[nx, ny, nz]).
     Surface array has integer labels in each positions, that are:
 
     * -1: solvent points;
@@ -444,9 +442,8 @@ Create a graph from a list of solvent-exposed residues.
   * **atomic** (numpy.ndarray) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
     and radius) for each atom.
 
-  * **selection** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["CA", "CB", "all"], *optional*)
-
-    Atomic selection, by default "CB". Keywords options are:
+  * **selection** (`Literal <https://docs.python.org/3/library/typing.html#typing.Literal>`_\["CA", "CB", "all"], *optional*) – Atomic selection, by default "CB".
+    Keywords options are:
     
     * 'CA': Select alfa-carbon;
 
