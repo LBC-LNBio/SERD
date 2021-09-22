@@ -9,6 +9,7 @@ Python package
 See also
 --------
 * GitHub repository: https://github.com/jvsguerra/SERD
+* Documentation: https://github.com/jvsguerra/SERD/#api-reference
 """
 
 __name__ = "SERD"
@@ -17,12 +18,18 @@ __license__ = "GNU GPL-3.0 License"
 
 import os
 import pathlib
-import numpy
-import networkx
-from pyKVFinder import read_vdw, read_xyz
-from pyKVFinder.grid import _get_sincos, _get_dimensions
-from scipy.spatial.distance import cdist
 from typing import Union, Optional, Literal, List, Dict
+
+try:
+    import numpy
+    import networkx
+    from pyKVFinder import read_vdw, read_xyz
+    from pyKVFinder.grid import _get_sincos, _get_dimensions
+    from scipy.spatial.distance import cdist
+except SyntaxError:
+    pass
+except ModuleNotFoundError:
+    pass
 
 __all__ = [
     "read_vdw",
