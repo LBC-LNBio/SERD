@@ -20,7 +20,7 @@ __all__ = [
     "save",
     "save_session",
     "r2g",
-    "g2pdb"
+    "g2pdb",
 ]
 
 
