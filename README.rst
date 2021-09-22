@@ -90,9 +90,7 @@ If users prefer, instead of running **SERD.detect** function, users can apply th
  
   This step is only necessary if you are reading a custom van der Waals radii file to use in **SERD.read_pdb**.
 
-.. seealso::
-
-  `pyKVFinder.read_vdw <https://lbc-lnbio.github.io/pyKVFinder/_api_reference/read_vdw.html>`_
+  For more details, refer to `pyKVFinder.read_vdw <https://lbc-lnbio.github.io/pyKVFinder/_api_reference/read_vdw.html>`_.
 
 **SERD.read_pdb** or **SERD.read_xyz** take a target .pdb or .xyz file and returns the atomic information (residue number, chain identifier, residue name, xyz coordinates, radius).
 
@@ -478,18 +476,18 @@ Create a graph from a list of solvent-exposed residues.
 
 **SERD.g2pdb(graph, atomic, residues, fn='graph.pdb')**
 
-  Save a graph to a PDB-formatted file. Each node are represented by the
-  CA atom of the residue and edges are represented by CONECT record.
+Save a graph to a PDB-formatted file. Each node are represented by the
+CA atom of the residue and edges are represented by CONECT record.
 
-  :Parameters:      
-    * **graph** (*networkx.classes.graph.Graph*) – A graph of solvent-exposed residues with edges defined by a distance smaller than the cutoff.
+:Parameters:      
+  * **graph** (*networkx.classes.graph.Graph*) – A graph of solvent-exposed residues with edges defined by a distance smaller than the cutoff.
 
-    * **atomic** (*numpy.ndarray*) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
-      and radius) for each atom.
+  * **atomic** (*numpy.ndarray*) – A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates
+    and radius) for each atom.
 
-    * **residues** – A list of solvent-exposed residues.
+  * **residues** – A list of solvent-exposed residues.
 
-    * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to a PDB file, by default “graph.pdb”.
+  * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to a PDB file, by default “graph.pdb”.
 
 *******
 License
