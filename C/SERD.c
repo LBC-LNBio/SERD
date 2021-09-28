@@ -435,7 +435,6 @@ void flood_and_fill(int *grid, int nx, int ny, int nz, int i, int j, int k, int 
 
         if (!big)
         {
-#pragma omp taskloop shared(i, j, k, nx, ny, nz, tag, grid), private(x, y, z)
             for (x = i - 1; x <= i + 1; x++)
                 for (y = j - 1; y <= j + 1; y++)
                     for (z = k - 1; z <= k + 1; z++)
