@@ -17,7 +17,7 @@ __version__ = "0.1.0"
 __license__ = "GNU GPL-3.0 License"
 
 try:
-    from ._serd import *
+    from .SERD import *
 except SyntaxError:
     pass
 except ModuleNotFoundError:
