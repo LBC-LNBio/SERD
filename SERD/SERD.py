@@ -779,7 +779,7 @@ def r2g(
     intraresidual : bool, optional
         Whether to consider intraresidual contacts to create adjacency matrix, by default False.
     weighted_edges :
-        whether to include the distances as weight of the edges.
+        Whether to include the distances as weight of the edges.
 
     Returns
     -------
@@ -827,12 +827,9 @@ def r2g(
     else:
         adjacency = numpy.logical_and(distance > 0.0, distance < cutoff).astype(int)
 
-    
     # Create networkx.Graph
     G = networkx.Graph()
-    
     G.add_edges_from(numpy.argwhere(adjacency))
-    
     if weighted_edges:
         weighted_edges = [(edges[0],edges[1],distance[edges[0]][edges[1]]) for edges in G.edges(data=True)]
         G.add_weighted_edges_from(weighted_edges)
