@@ -437,7 +437,7 @@ the target biomolecular structure (shown as sticks).
 
   * **fn** (`Union <https://docs.python.org/3/library/typing.html#typing.Union>`_\[`str <https://docs.python.org/3/library/stdtypes.html#str>`_, `pathlib.Path <https://docs.python.org/3/library/pathlib.html#pathlib.Path>`_], *optional*) – A path to a PyMOL session file, by default “residues.pse”
 
-**SERD.r2g(residues, atomic, selection="CB", cutoff=None, intraresidual=False)**
+**SERD.r2g(residues, atomic, selection="CB", cutoff=None, intraresidual=False, weighted_edges=False)**
 
 Create a graph from a list of solvent-exposed residues.
 
@@ -460,6 +460,8 @@ Create a graph from a list of solvent-exposed residues.
   * **cutoff** (`Optional <https://docs.python.org/3/library/typing.html#typing.Optional>`_\[`float <https://docs.python.org/3/library/functions.html#float>`_], *optional*) – A limit of distance to define an edge between two solvent-exposed residues, by default None. If None, cutoff depends on selection argument. If "CA", cutoff is 10.0. If "CB", cutoff is 8.0. If "all", cutoff is 5.0.
   
   * **intraresidual** (`bool <https://docs.python.org/3/library/functions.html#bool>`_, *optional*) – Whether to consider intraresidual contacts to create adjacency matrix, by default False.
+
+  * **weighted_edges** (`bool <https://docs.python.org/3/library/functions.html#bool>`_, *optional*) – Whether to include the interresidual distances as edge weights, by default False.
 
 :Returns:         
   **G** – A graph of solvent-exposed residues with edges defined by a distance smaller than the cutoff.

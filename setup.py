@@ -57,7 +57,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         # Indicate who your project is intended for
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
@@ -70,6 +70,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3 :: Only",
     ],
     # Keywords
@@ -79,7 +80,7 @@ setup(
     # Python package configuration
     packages=["SERD"],
     # Python versions support
-    python_requires=">=3.7, <4",
+    python_requires=">=3.8, <4",
     # This field lists other packages that your project depends on to run.
     install_requires=reqs,
     # If there are data files included in your packages that need to be
