@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial &mdash; SERD 0.1.1 documentation</title>
+  <title>Full workflow &mdash; SERD 0.1.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/icon.ico"/>
@@ -49,7 +49,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Full workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#stepwise-workflow">Stepwise workflow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -85,7 +86,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Tutorial</li>
+      <li>Full workflow</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_tutorial/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -95,14 +96,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tutorial">
-<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading"></a></h1>
-<p>This section is an introductory overview of SERD features. For detailed reference documentation of the functions and classes contained in the package, see the <a class="reference external" href="../_api_reference/index.html">API reference</a>.</p>
+  <h1>Tutorial</h1><p>This section is an introductory overview of SERD features. For detailed reference documentation of the functions and classes contained in the package, see the <a class="reference external" href="../_api_reference/index.html">API reference</a>.</p>
 <p>In this tutorial, we will use SERD on a catalytic subunit of a cAMP-dependent protein kinase (cADK) to detect its solvent-expoosed residues.</p>
 <p>First of all, import SERD package on Python:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">SERD</span>
 </pre></div>
 </div>
+<section id="full-workflow">
+<h1>Full workflow<a class="headerlink" href="#full-workflow" title="Permalink to this heading"></a></h1>
 <p>The full workflow for detecting solvent-exposed residues can be run with <strong>SERD.detect</strong> function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">residues</span> <span class="o">=</span> <span class="n">SERD</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="s1">&#39;examples/1FMO.pdb&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
@@ -127,6 +128,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SERD</span><span class="o">.</span><span class="n">g2pdb</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">atomic</span><span class="p">,</span> <span class="n">residues</span><span class="p">,</span> <span class="s1">&#39;graph.pdb&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="stepwise-workflow">
+<h1>Stepwise workflow<a class="headerlink" href="#stepwise-workflow" title="Permalink to this heading"></a></h1>
 <p>If users prefer, instead of running <strong>SERD.detect</strong> function, users can apply the detection of solvent-exposed residues in a step-by-step fashion. Below, we briefly describe this procedure.</p>
 <p><strong>SERD.read_vdw</strong> takes a vdW radii file (.dat) and returns a dictionary contaning radii values for each atom of each residue.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vdw</span> <span class="o">=</span> <span class="n">SERD</span><span class="o">.</span><span class="n">read_vdw</span><span class="p">()</span>

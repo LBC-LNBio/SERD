@@ -1,3 +1,7 @@
+.. raw:: html
+
+    <h1>API Reference</h1>
+
 SERD.detect
 ***********
 

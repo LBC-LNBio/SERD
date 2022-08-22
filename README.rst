@@ -8,6 +8,9 @@ SERD
 .. image:: https://img.shields.io/pypi/pyversions/SERD
     :target: https://pypi.org/project/SERD/
 
+.. image:: https://img.shields.io/pypi/dm/SERD
+    :target: https://pypi.org/project/SERD/
+
 A Python package to detect solvent-exposed residues of a target biomolecule.
 
 * `GitHub repository <https://github.com/jvsguerra/SERD>`_

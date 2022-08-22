@@ -1,5 +1,6 @@
-Tutorial
-========
+.. raw:: html
+
+    <h1>Tutorial</h1>
 
 This section is an introductory overview of SERD features. For detailed reference documentation of the functions and classes contained in the package, see the `API reference <../_api_reference/index.html>`_.
 
@@ -10,6 +11,9 @@ First of all, import SERD package on Python:
 .. code:: python
 
   >>> import SERD
+
+Full workflow
+-------------
 
 The full workflow for detecting solvent-exposed residues can be run with **SERD.detect** function:
 
@@ -42,6 +46,9 @@ In addition, users can save graph as a PDB file, with nodes represented by the C
 .. code:: python
 
   >>> SERD.g2pdb(graph, atomic, residues, 'graph.pdb')
+
+Stepwise workflow
+-----------------
 
 If users prefer, instead of running **SERD.detect** function, users can apply the detection of solvent-exposed residues in a step-by-step fashion. Below, we briefly describe this procedure.
 
