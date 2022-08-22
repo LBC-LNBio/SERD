@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SERD.SERD &mdash; SERD 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/icon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> SERD
+          </a>
+              <div class="version">
+                0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_installation/index.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_installation/index.html#installation">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_tutorial/index.html">Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_api_reference/index.html">SERD.detect</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_api_reference/index.html#serd-g2pdb">SERD.g2pdb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_api_reference/index.html#serd-get-vertices">SERD.get_vertices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_api_reference/index.html#serd-interface">SERD.interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_api_reference/index.html#serd-r2g">SERD.r2g</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_api_reference/index.html#serd-read-vdw">SERD.read_vdw</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_api_reference/index.html#serd-read-pdb">SERD.read_pdb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_api_reference/index.html#serd-save">SERD.save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_api_reference/index.html#serd-save-session">SERD.save_session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_api_reference/index.html#serd-surface">SERD.surface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_about/index.html">Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_about/index.html#scientific-team">Scientific team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_about/index.html#license">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SERD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>SERD.SERD</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for SERD.SERD</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">networkx</span>
+<span class="kn">from</span> <span class="nn">pyKVFinder</span> <span class="kn">import</span> <span class="n">read_vdw</span><span class="p">,</span> <span class="n">read_xyz</span>
+<span class="kn">from</span> <span class="nn">pyKVFinder.grid</span> <span class="kn">import</span> <span class="n">_get_sincos</span><span class="p">,</span> <span class="n">_get_dimensions</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cdist</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;read_vdw&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;read_xyz&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;read_pdb&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_vertices&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;_get_sincos&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;_get_dimensions&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;surface&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;interface&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;detect&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;save&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;save_session&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;r2g&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;g2pdb&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_process_residues</span><span class="p">(</span><span class="n">residues</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Process raw list of residues from _interface or _detect to a list of</span>
+<span class="sd">    residue information (residue number, chain identifier and residue name).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    residues : List[str]</span>
+<span class="sd">        A list of residues with duplications and items separated by &#39;_&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[List[str]]</span>
+<span class="sd">       A list of residue information (residue number, chain identifier and</span>
+<span class="sd">       residue name).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">res</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">residues</span><span class="p">))]</span>
+
+
+<span class="k">def</span> <span class="nf">_process_pdb_line</span><span class="p">(</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vdw</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Extracts ATOM and HETATM information of PDB line.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line : str</span>
+<span class="sd">        A line of a valid PDB file</span>
+<span class="sd">    vdw : Dict[str, Dict[str, Dict[str, float]]]</span>
+<span class="sd">        A dictionary containing radii values.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    atomic : List[Union[str, float, int]]</span>
+<span class="sd">        A list with resnum, chain, resname, atom name, xyz coordinates and radius.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get PDB infomation</span>
+    <span class="n">atom</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">resname</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">17</span><span class="p">:</span><span class="mi">20</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">resnum</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">27</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">chain</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">21</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span><span class="mi">38</span><span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">38</span><span class="p">:</span><span class="mi">46</span><span class="p">])</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">54</span><span class="p">])</span>
+    <span class="n">atom_symbol</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">76</span><span class="p">:</span><span class="mi">78</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="c1"># Get atom and radius from vdw</span>
+    <span class="k">if</span> <span class="n">resname</span> <span class="ow">in</span> <span class="n">vdw</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">vdw</span><span class="p">[</span><span class="n">resname</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="n">vdw</span><span class="p">[</span><span class="n">resname</span><span class="p">][</span><span class="n">atom</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="n">vdw</span><span class="p">[</span><span class="s2">&quot;GEN&quot;</span><span class="p">][</span><span class="n">atom_symbol</span><span class="p">]</span>
+
+    <span class="c1"># Prepare output</span>
+    <span class="n">atomic</span> <span class="o">=</span> <span class="p">[</span><span class="n">resnum</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">radius</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">atomic</span>
+
+
+<div class="viewcode-block" id="read_pdb"><a class="viewcode-back" href="../../_api_reference/index.html#SERD.read_pdb">[docs]</a><span class="k">def</span> <span class="nf">read_pdb</span><span class="p">(</span>
+    <span class="n">fn</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">],</span> <span class="n">vdw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Reads PDB file into numpy.ndarrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn : Union[str, pathlib.Path]</span>
+<span class="sd">        A path to PDB file.</span>
+<span class="sd">    vdw : Dict[str, Dict[str, float]], optional</span>
+<span class="sd">        A dictionary containing radii values, by default None. If None, use output of `pyKVFinder.read_vdw()`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    atomic : numpy.ndarray</span>
+<span class="sd">        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates</span>
+<span class="sd">        and radius) for each atom.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `fn` must be a string or a pathlib.Path.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    The van der Waals radii file defines the radius values for each atom</span>
+<span class="sd">    by residue and when not defined, it uses a generic value based on the</span>
+<span class="sd">    atom type. The function by default loads the built-in van der Waals radii</span>
+<span class="sd">    file: `vdw.dat`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check arguments</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`fn` must be a string or a pathlib.Path.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Define default vdw file</span>
+    <span class="k">if</span> <span class="n">vdw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vdw</span> <span class="o">=</span> <span class="n">read_vdw</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Create lists</span>
+    <span class="n">atomic</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ATOM&quot;</span> <span class="ow">or</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;HETATM&quot;</span><span class="p">:</span>
+                <span class="n">atomic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_process_pdb_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">vdw</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">atomic</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_vertices"><a class="viewcode-back" href="../../_api_reference/index.html#SERD.get_vertices">[docs]</a><span class="k">def</span> <span class="nf">get_vertices</span><span class="p">(</span>
+    <span class="n">atomic</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">probe</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.4</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gets 3D grid vertices.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atomic : numpy.ndarray</span>
+<span class="sd">        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates</span>
+<span class="sd">        and radius) for each atom.</span>
+<span class="sd">    probe : Union[float, int], optional</span>
+<span class="sd">        Probe size (A), by default 4.0.</span>
+<span class="sd">    step : Union[float, int], optional</span>
+<span class="sd">        Grid spacing (A), by default 0.6.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vertices : numpy.ndarray</span>
+<span class="sd">        A numpy.ndarray with xyz vertices coordinates</span>
+<span class="sd">        (origin, X-axis, Y-axis, Z-axis).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">pyKVFinder</span> <span class="kn">import</span> <span class="n">get_vertices</span> <span class="k">as</span> <span class="n">gv</span>
+
+    <span class="c1"># Get vertices</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">gv</span><span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">probe</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">vertices</span></div>
+
+
+<div class="viewcode-block" id="surface"><a class="viewcode-back" href="../../_api_reference/index.html#SERD.surface">[docs]</a><span class="k">def</span> <span class="nf">surface</span><span class="p">(</span>
+    <span class="n">atomic</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">surface_representation</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;VDW&quot;</span><span class="p">,</span> <span class="s2">&quot;SES&quot;</span><span class="p">,</span> <span class="s2">&quot;SAS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;SES&quot;</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+    <span class="n">probe</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.4</span><span class="p">,</span>
+    <span class="n">nthreads</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Defines the solvent-exposed surface of a target biomolecule in a 3D grid.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atomic : numpy.ndarray</span>
+<span class="sd">        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates</span>
+<span class="sd">        and radius) for each atom.</span>
+<span class="sd">    surface_representation : Literal[&quot;VDW&quot;, &quot;SES&quot;, &quot;SAS&quot;], optional</span>
+<span class="sd">        Surface representation. Keywords options are VDW (van der Waals surface), SES (Solvent Excluded Surface)</span>
+<span class="sd">        or SAS (Solvent Accessible Surface), by default &quot;SES&quot;.</span>
+<span class="sd">    step : Union[float, int], optional</span>
+<span class="sd">        Grid spacing (A), by default 0.6.</span>
+<span class="sd">    probe : Union[float, int], optional</span>
+<span class="sd">        Probe size (A) to define SES and SAS representations, by default 1.4.</span>
+<span class="sd">    nthreads : Optional[int], optional</span>
+<span class="sd">        Number of threads, by default None. If None, the number of threads is</span>
+<span class="sd">        `os.cpu_count() - 1`.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Print extra information to standard output, by default False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    surface : numpy.ndarray</span>
+<span class="sd">        Surface points in the 3D grid (surface[nx, ny, nz]).</span>
+<span class="sd">        Surface array has integer labels in each positions, that are:</span>
+
+<span class="sd">            * -1: solvent points;</span>
+
+<span class="sd">            * 0: biomolecule points;</span>
+
+<span class="sd">            * 1: solvent-exposed surface points.</span>
+
+<span class="sd">            Enclosed regions are considered biomolecule points.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `atomic` must be a numpy.ndarray.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `atomic` has incorrect shape. It must be (n, 8).</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `surface_representation` must be a `VDW`, `SES` or `SAS`.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `step` must be a positive real number.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `step` must be a positive real number.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `probe` must be a non-negative real number.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `probe` must be a non-negative real number.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `nthreads` must be a positive integer.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `nthreads` must be a positive integer.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `verbose` must be a boolean.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `probe` must be a positive real number, when SES or SAS is set.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">_SERD</span> <span class="kn">import</span> <span class="n">_surface</span>
+
+    <span class="c1"># Check arguments types</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">atomic</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`atomic` must be a numpy.ndarray.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomic</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`atomic` has incorrect shape. It must be (n, 8).&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">atomic</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`atomic` has incorrect shape. It must be (n, 8).&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">surface_representation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;VDW&quot;</span><span class="p">,</span> <span class="s2">&quot;SES&quot;</span><span class="p">,</span> <span class="s2">&quot;SAS&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`surface_representation` must be a `VDW`, `SES` or `SAS`.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`step` must be a positive real number.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">step</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`step` must be a positive real number.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">probe</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`probe` must be a non-negative real number.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">probe</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`probe` must be a non-negative real number.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nthreads</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">nthreads</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`nthreads` must be a positive integer.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">nthreads</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`nthreads` must be a positive integer.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`verbose` must be a boolean.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Convert types</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="k">else</span> <span class="n">step</span>
+    <span class="n">probe</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">probe</span><span class="p">)</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">probe</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="k">else</span> <span class="n">probe</span>
+
+    <span class="c1"># If surface representation is the van der Waals surface, the probe must be 0.0</span>
+    <span class="k">if</span> <span class="n">surface_representation</span> <span class="o">==</span> <span class="s2">&quot;VDW&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&gt; Surface representation: van der Waals (vdW).&quot;</span><span class="p">)</span>
+        <span class="n">probe</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">surface_representation</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">probe</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;`probe` must be a positive real number, when </span><span class="si">{</span><span class="n">surface_representation</span><span class="si">}</span><span class="s2"> is set.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">surface_representation</span> <span class="o">==</span> <span class="s2">&quot;SES&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&gt; Surface representation: Solvent Excluded Surface (SES).&quot;</span><span class="p">)</span>
+            <span class="n">surface_representation</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">surface_representation</span> <span class="o">==</span> <span class="s2">&quot;SAS&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&gt; Surface representation: Solvent Accessible Surface (SAS).&quot;</span><span class="p">)</span>
+            <span class="n">surface_representation</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Get vertices</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">get_vertices</span><span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="n">probe</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
+    <span class="c1"># Get sincos</span>
+    <span class="n">sincos</span> <span class="o">=</span> <span class="n">_get_sincos</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+
+    <span class="c1"># Get dimensions</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span> <span class="o">=</span> <span class="n">_get_dimensions</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
+    <span class="c1"># Get size</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">*</span> <span class="n">ny</span> <span class="o">*</span> <span class="n">nz</span>
+
+    <span class="c1"># Extract xyzr from atomic</span>
+    <span class="n">xyzr</span> <span class="o">=</span> <span class="n">atomic</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c1"># Identify solvent-exposed surface</span>
+    <span class="n">surface</span> <span class="o">=</span> <span class="n">_surface</span><span class="p">(</span>
+        <span class="n">size</span><span class="p">,</span>
+        <span class="n">nx</span><span class="p">,</span>
+        <span class="n">ny</span><span class="p">,</span>
+        <span class="n">nz</span><span class="p">,</span>
+        <span class="n">xyzr</span><span class="p">,</span>
+        <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">sincos</span><span class="p">,</span>
+        <span class="n">step</span><span class="p">,</span>
+        <span class="n">probe</span><span class="p">,</span>
+        <span class="n">surface_representation</span><span class="p">,</span>
+        <span class="n">nthreads</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">surface</span></div>
+
+
+<div class="viewcode-block" id="interface"><a class="viewcode-back" href="../../_api_reference/index.html#SERD.interface">[docs]</a><span class="k">def</span> <span class="nf">interface</span><span class="p">(</span>
+    <span class="n">surface</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">atomic</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">ignore_backbone</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+    <span class="n">probe</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.4</span><span class="p">,</span>
+    <span class="n">nthreads</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Identifies the solvent-exposed residues based on a target solvent-exposed surface</span>
+<span class="sd">    and atomic information of a biomolecule (residue number, chain identifier, residue</span>
+<span class="sd">    name, xyz coordinates, radius).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    surface : numpy.ndarray</span>
+<span class="sd">        Surface points in the 3D grid (surface[nx, ny, nz]).</span>
+<span class="sd">        Surface array has integer labels in each positions, that are:</span>
+
+<span class="sd">            * -1: solvent points;</span>
+
+<span class="sd">            * 0: biomolecule points;</span>
+
+<span class="sd">            * 1: solvent-exposed surface points.</span>
+
+<span class="sd">            Enclosed regions are considered biomolecule points.</span>
+<span class="sd">    atomic : numpy.ndarray</span>
+<span class="sd">        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates</span>
+<span class="sd">        and radius) for each atom.</span>
+<span class="sd">    ignore_backbone : bool, optional</span>
+<span class="sd">        Whether to ignore backbone atoms (C, CA, N, O) when defining interface residues, by default True.</span>
+<span class="sd">    step : Union[float, int], optional</span>
+<span class="sd">        Grid spacing (A), by default 0.6.</span>
+<span class="sd">    probe : Union[float, int], optional</span>
+<span class="sd">        Probe size (A) to define SES and SAS representations, by default 1.4.</span>
+<span class="sd">    nthreads : Optional[int], optional</span>
+<span class="sd">        Number of threads, by default None. If None, the number of threads is</span>
+<span class="sd">        `os.cpu_count() - 1`.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Print extra information to standard output, by default False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    residues : List[List[str]]</span>
+<span class="sd">        A list of solvent-exposed residues.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `surface` must be a numpy.ndarray.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `surface` has the incorrect shape. It must be (nx, ny, nz).</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `atomic` must be a numpy.ndarray.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `atomic` has incorrect shape. It must be (n, 8).</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `ignore_backbone` must be a boolean.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `step` must be a positive real number.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `probe` must be a non-negative real number.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `probe` must be a non-negative real number.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `nthreads` must be a positive integer.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `nthreads` must be a positive integer.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `verbose` must be a boolean.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">_SERD</span> <span class="kn">import</span> <span class="n">_interface</span>
+
+    <span class="c1"># Check arguments types</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`surface` must be a numpy.ndarray.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">surface</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`surface` has the incorrect shape. It must be (nx, ny, nz).&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">atomic</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`atomic` must be a numpy.ndarray.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomic</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`atomic` has incorrect shape. It must be (n, 8).&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">atomic</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`atomic` has incorrect shape. It must be (n, 8).&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ignore_backbone</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`ignore_backbone` must be a boolean.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`step` must be a positive real number.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">step</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`step` must be a positive real number.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">probe</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`probe` must be a non-negative real number.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">probe</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`probe` must be a non-negative real number.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nthreads</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">nthreads</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`nthreads` must be a positive integer.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">nthreads</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`nthreads` must be a positive integer.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`verbose` must be a boolean.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get vertices</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">get_vertices</span><span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="n">probe</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
+    <span class="c1"># Get sincos</span>
+    <span class="n">sincos</span> <span class="o">=</span> <span class="n">_get_sincos</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+
+    <span class="c1"># Extract xyzr from atomic</span>
+    <span class="n">xyzr</span> <span class="o">=</span> <span class="n">atomic</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c1"># Extract atominfo from atomic</span>
+    <span class="n">atominfo</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+        <span class="p">([[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">atom</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">atom</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">atom</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">atom</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atomic</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]])</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Remove backbone from atominfo</span>
+    <span class="k">if</span> <span class="n">ignore_backbone</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">atominfo</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">atominfo</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;CA&quot;</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">atominfo</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;N&quot;</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">atominfo</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;O&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">atominfo</span> <span class="o">=</span> <span class="n">atominfo</span><span class="p">[</span>
+            <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">]</span>
+        <span class="n">xyzr</span> <span class="o">=</span> <span class="n">xyzr</span><span class="p">[</span>
+            <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">]</span>
+
+    <span class="c1"># Prepare atominfo</span>
+    <span class="n">atominfo</span> <span class="o">=</span> <span class="n">atominfo</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="c1"># Detect solvent-exposed residues</span>
+    <span class="n">residues</span> <span class="o">=</span> <span class="n">_interface</span><span class="p">(</span>
+        <span class="n">surface</span><span class="p">,</span>
+        <span class="n">atominfo</span><span class="p">,</span>
+        <span class="n">xyzr</span><span class="p">,</span>
+        <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">sincos</span><span class="p">,</span>
+        <span class="n">step</span><span class="p">,</span>
+        <span class="n">probe</span> <span class="o">+</span> <span class="n">step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">nthreads</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Process residues</span>
+    <span class="n">residues</span> <span class="o">=</span> <span class="n">_process_residues</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">residues</span></div>
+
+
+<div class="viewcode-block" id="detect"><a class="viewcode-back" href="../../_api_reference/index.html#SERD.detect">[docs]</a><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span>
+    <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">],</span>
+    <span class="n">surface_representation</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;VDW&quot;</span><span class="p">,</span> <span class="s2">&quot;SES&quot;</span><span class="p">,</span> <span class="s2">&quot;SAS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;SES&quot;</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+    <span class="n">probe</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.4</span><span class="p">,</span>
+    <span class="n">vdw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ignore_backbone</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">nthreads</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Detect solvent-exposed residues of a target biomolecule.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    target : Union[str, pathlib.Path]</span>
+<span class="sd">        A path to PDB or XYZ file of a target biomolecular structure.</span>
+<span class="sd">    surface_representation : Literal[&quot;VDW&quot;, &quot;SES&quot;, &quot;SAS&quot;], optional</span>
+<span class="sd">        Surface representation. Keywords options are VDW (van der Waals), SES (Solvent Excluded Surface)</span>
+<span class="sd">        or SAS (Solvent Accessible Surface), by default &quot;SES&quot;.</span>
+<span class="sd">    step : Union[float, int], optional</span>
+<span class="sd">        Grid spacing (A), by default 0.6.</span>
+<span class="sd">    probe : Union[float, int], optional</span>
+<span class="sd">        Probe size (A) to define SES and SAS representations, by default 1.4.</span>
+<span class="sd">    vdw : Optional[Union[str, pathlib.Path]], optional</span>
+<span class="sd">        A path to a van der Waals radii file, by default None. If None, apply the built-in van der</span>
+<span class="sd">        Waals radii file: `vdw.dat`.</span>
+<span class="sd">    ignore_backbone : bool, optional</span>
+<span class="sd">        Whether to ignore backbone atoms (C, CA, N, O) when defining interface residues, by default True.</span>
+<span class="sd">    nthreads : Optional[int], optional</span>
+<span class="sd">        Number of threads, by default None. If None, the number of threads is</span>
+<span class="sd">        `os.cpu_count() - 1`.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Print extra information to standard output, by default False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    residues : List[List[str]]</span>
+<span class="sd">        A list of solvent-exposed residues.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `target` must be a string or a pathlib.Path.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `surface_representation` must be a `VDW`, `SES` or `SAS`.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `step` must be a positive real number.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `step` must be a positive real number.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `probe` must be a non-negative real number.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `probe` must be a non-negative real number.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `vdw` must be a string or a pathlib.Path.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `nthreads` must be a positive integer.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `nthreads` must be a positive integer.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        `verbose` must be a boolean.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `probe` must be a positive real number, when SES or SAS is set.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `target` must be .pdb or .xyz.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    The van der Waals radii file defines the radius values for each</span>
+<span class="sd">    atom by residue and when not defined, it uses a generic value</span>
+<span class="sd">    based on the atom type (see pyKVFinder package).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check arguments types</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`target` must be a string or a pathlib.Path.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">surface_representation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;VDW&quot;</span><span class="p">,</span> <span class="s2">&quot;SES&quot;</span><span class="p">,</span> <span class="s2">&quot;SAS&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`surface_representation` must be a `VDW`, `SES` or `SAS`.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`step` must be a positive real number.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">step</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`step` must be a positive real number.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">probe</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`probe` must be a non-negative real number.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">probe</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`probe` must be a non-negative real number.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vdw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">vdw</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`vdw` must be a string or a pathlib.Path.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nthreads</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">nthreads</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`nthreads` must be a positive integer.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">nthreads</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`nthreads` must be a positive integer.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`verbose` must be a boolean.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Read van der Waals radii dictionary</span>
+    <span class="n">vdw</span> <span class="o">=</span> <span class="n">read_vdw</span><span class="p">(</span><span class="n">vdw</span><span class="p">)</span>
+
+    <span class="c1"># Read target biomolecule</span>
+    <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.pdb&quot;</span><span class="p">):</span>
+        <span class="n">atomic</span> <span class="o">=</span> <span class="n">read_pdb</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">vdw</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">target</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.xyz&quot;</span><span class="p">):</span>
+        <span class="n">atomic</span> <span class="o">=</span> <span class="n">read_xyz</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">vdw</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`target` must be .pdb or .xyz.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Define solvent-exposed surface</span>
+    <span class="n">solvsurf</span> <span class="o">=</span> <span class="n">surface</span><span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="n">surface_representation</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">probe</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+
+    <span class="c1"># Define solvent-exposed residues</span>
+    <span class="n">residues</span> <span class="o">=</span> <span class="n">interface</span><span class="p">(</span>
+        <span class="n">solvsurf</span><span class="p">,</span> <span class="n">atomic</span><span class="p">,</span> <span class="n">ignore_backbone</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">probe</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">,</span> <span class="n">verbose</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">residues</span></div>
+
+
+<div class="viewcode-block" id="save"><a class="viewcode-back" href="../../_api_reference/index.html#SERD.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">residues</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">fn</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;residues.pickle&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save list of solvent-exposed residues to binary pickle file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    residues : List[List[str]]</span>
+<span class="sd">        A list of solvent-exposed residues.</span>
+<span class="sd">    fn : Union[str, pathlib.Path], optional</span>
+<span class="sd">        A path to pickle file, by default &quot;residues.pickle&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">pickle</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_session"><a class="viewcode-back" href="../../_api_reference/index.html#SERD.save_session">[docs]</a><span class="k">def</span> <span class="nf">save_session</span><span class="p">(</span>
+    <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">],</span>
+    <span class="n">residues</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+    <span class="n">fn</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;residues.pse&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save a PyMOL session with the solvent-exposed residues (shown as red sticks) and</span>
+<span class="sd">    the target biomolecular structure (shown as cartoon).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    target : Union[str, pathlib.Path]</span>
+<span class="sd">        A path to PDB or XYZ file of a target biomolecular structure.</span>
+<span class="sd">    residues : List[List[str]]</span>
+<span class="sd">        A list of solvent-exposed residues.</span>
+<span class="sd">    fn : Union[str, pathlib.Path], optional</span>
+<span class="sd">        A path to a PyMOL session file, by default &quot;residues.pse&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">warnings</span>
+    <span class="kn">from</span> <span class="nn">pymol</span> <span class="kn">import</span> <span class="n">cmd</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;`residues` is an empty list.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Prepare target name</span>
+    <span class="n">target_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">target</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.pdb&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Load target biomolecule</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">reinitialize</span><span class="p">()</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">target_name</span><span class="p">)</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">hide</span><span class="p">(</span><span class="s2">&quot;everything&quot;</span><span class="p">,</span> <span class="n">target_name</span><span class="p">)</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;sticks&quot;</span><span class="p">,</span> <span class="n">target_name</span><span class="p">)</span>
+
+    <span class="c1"># Select residues</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2"> and&quot;</span>
+    <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">:</span>
+        <span class="n">resnum</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">residue</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2"> (resid </span><span class="si">{</span><span class="n">resnum</span><span class="si">}</span><span class="s2"> and chain </span><span class="si">{</span><span class="n">chain</span><span class="si">}</span><span class="s2">) or&quot;</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">command</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;res&quot;</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
+
+    <span class="c1"># Create residues object</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;residues&quot;</span><span class="p">,</span> <span class="s2">&quot;res&quot;</span><span class="p">)</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;res&quot;</span><span class="p">)</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">)</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">target_name</span><span class="p">)</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="n">target_name</span><span class="p">)</span>
+
+    <span class="c1"># Save PyMOL session</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_atom_selection</span><span class="p">(</span>
+    <span class="n">atomic</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">selection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">,</span> <span class="s2">&quot;CB&quot;</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms in atomic data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atomic : numpy.ndarray</span>
+<span class="sd">        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates</span>
+<span class="sd">        and radius) for each atom.</span>
+<span class="sd">    selection : {&quot;CA&quot;, &quot;CB&quot;}, optional</span>
+<span class="sd">        Atomic selection, by default &quot;CB&quot;. Keywords options are:</span>
+
+<span class="sd">            * &#39;CA&#39;: Select alfa-carbon;</span>
+
+<span class="sd">            * &#39;CB&#39;: Select beta-carbon, except for glycine which selects the alfa-carbon.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    atomic</span>
+<span class="sd">        A numpy array with selected atomic data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;CB&quot;</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">atomic</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[[</span><span class="s2">&quot;GLY&quot;</span><span class="p">,</span> <span class="s2">&quot;CA&quot;</span><span class="p">]])</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">atomic</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CB&quot;</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">atomic</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CA&quot;</span>
+
+    <span class="k">return</span> <span class="n">atomic</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_calculate_distance</span><span class="p">(</span><span class="n">atomic</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate distance between atoms.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atomic : numpy.ndarray</span>
+<span class="sd">        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates</span>
+<span class="sd">        and radius) for each atom.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    distance : numpy.ndarray</span>
+<span class="sd">        Distance between atoms of atomic based on indexes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">atomic</span> <span class="o">=</span> <span class="n">atomic</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">cdist</span><span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="n">atomic</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">distance</span>
+
+
+<span class="k">def</span> <span class="nf">_all_atoms_to_residues</span><span class="p">(</span>
+    <span class="n">atomic</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert distance between all atoms to minimal distance between residues.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atomic : numpy.ndarray</span>
+<span class="sd">        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates</span>
+<span class="sd">        and radius) for each atom.</span>
+<span class="sd">    distance : numpy.ndarray</span>
+<span class="sd">        Distance between all atoms.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    residues : numpy.ndarray</span>
+<span class="sd">        Distance between residues.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+        <span class="n">atomic</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">)</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">n_res</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+
+    <span class="n">residues</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span>
+                <span class="n">distance</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">idx</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">:</span> <span class="n">idx</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">counts</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_res</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_res</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n_res</span><span class="p">,</span> <span class="n">n_res</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">residues</span>
+
+
+<div class="viewcode-block" id="r2g"><a class="viewcode-back" href="../../_api_reference/index.html#SERD.r2g">[docs]</a><span class="k">def</span> <span class="nf">r2g</span><span class="p">(</span>
+    <span class="n">residues</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+    <span class="n">atomic</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">selection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">,</span> <span class="s2">&quot;CB&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;CB&quot;</span><span class="p">,</span>
+    <span class="n">cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">intraresidual</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">weighted_edges</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">networkx</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Create a graph from a list of solvent-exposed residues.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    residues : List[List[str]]</span>
+<span class="sd">        A list of solvent-exposed residues.</span>
+<span class="sd">    atomic : numpy.ndarray</span>
+<span class="sd">        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates</span>
+<span class="sd">        and radius) for each atom.</span>
+<span class="sd">    selection : {&quot;CA&quot;, &quot;CB&quot;, &quot;all&quot;}, optional</span>
+<span class="sd">        Atomic selection, by default &quot;CB&quot;. Keywords options are:</span>
+
+<span class="sd">            * &#39;CA&#39;: Select alfa-carbon;</span>
+
+<span class="sd">            * &#39;CB&#39;: Select beta-carbon, except for glycine which selects the alfa-carbon;</span>
+
+<span class="sd">            * &#39;all&#39;: Select all atoms, distance between residues are the smallest distance between the atoms of these residues.</span>
+
+<span class="sd">    cutoff : Optional[float], optional</span>
+<span class="sd">        A limit of distance to define an edge between two solvent-exposed residues, by default None.</span>
+<span class="sd">        If None, cutoff depends on selection argument. If &quot;CA&quot;, cutoff is 10.0. If &quot;CB&quot;, cutoff is 8.0.</span>
+<span class="sd">    intraresidual : bool, optional</span>
+<span class="sd">        Whether to consider intraresidual contacts to create adjacency matrix, by default False.</span>
+<span class="sd">    weighted_edges : bool, False</span>
+<span class="sd">        Whether to include the interresidual distances as edge weights, by default False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    networkx.classes.graph.Graph</span>
+<span class="sd">        A graph of solvent-exposed residues with edges defined by a distance smaller than the cutoff.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        `selection` must be `CA`, `CB`, or `all`.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Cutoff for beta-carbon is based on CAPRI round 28. For more details, refer to</span>
+<span class="sd">    https://www.ebi.ac.uk/msd-srv/capri/round28/round28.html.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check arguments</span>
+    <span class="k">if</span> <span class="n">cutoff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;CA&quot;</span><span class="p">:</span>
+            <span class="n">cutoff</span> <span class="o">=</span> <span class="mf">10.0</span>
+        <span class="k">elif</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;CB&quot;</span><span class="p">:</span>
+            <span class="n">cutoff</span> <span class="o">=</span> <span class="mf">8.0</span>
+        <span class="k">elif</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="n">cutoff</span> <span class="o">=</span> <span class="mf">5.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`selection` must be `CA`, `CB`, or `all`.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get atom selection</span>
+    <span class="k">if</span> <span class="n">selection</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="n">atomic</span> <span class="o">=</span> <span class="n">_get_atom_selection</span><span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">)</span>
+
+    <span class="c1"># Keep solvent exposed residues</span>
+    <span class="c1"># https://stackoverflow.com/questions/51352527/check-for-identical-rows-in-different-numpy-arrays</span>
+    <span class="n">atomic</span> <span class="o">=</span> <span class="n">atomic</span><span class="p">[(</span><span class="n">atomic</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">==</span> <span class="n">residues</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+
+    <span class="c1"># Calculate distance</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">_calculate_distance</span><span class="p">(</span><span class="n">atomic</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">_all_atoms_to_residues</span><span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+
+    <span class="c1"># Calculate adjacency matrix</span>
+    <span class="k">if</span> <span class="n">intraresidual</span><span class="p">:</span>
+        <span class="n">adjacency</span> <span class="o">=</span> <span class="p">(</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="n">cutoff</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">adjacency</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="n">cutoff</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># Create networkx.Graph</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">networkx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+    <span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">adjacency</span><span class="p">))</span>
+
+    <span class="c1"># Add interresidual distances as edge weights</span>
+    <span class="k">if</span> <span class="n">weighted_edges</span><span class="p">:</span>
+        <span class="n">weighted_edges</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">distance</span><span class="p">[</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="k">for</span> <span class="n">edges</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">add_weighted_edges_from</span><span class="p">(</span><span class="n">weighted_edges</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">G</span></div>
+
+
+<div class="viewcode-block" id="g2pdb"><a class="viewcode-back" href="../../_api_reference/index.html#SERD.g2pdb">[docs]</a><span class="k">def</span> <span class="nf">g2pdb</span><span class="p">(</span>
+    <span class="n">graph</span><span class="p">:</span> <span class="n">networkx</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="p">,</span>
+    <span class="n">atomic</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">residues</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+    <span class="n">fn</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;graph.pdb&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save a graph to a PDB-formatted file. Each node are represented by the</span>
+<span class="sd">    CA atom of the residue and edges are represented by CONECT record.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    graph : networkx.classes.graph.Graph</span>
+<span class="sd">        A graph of solvent-exposed residues with edges defined by a distance smaller than the cutoff.</span>
+<span class="sd">    atomic : numpy.ndarray</span>
+<span class="sd">        A numpy array with atomic data (residue number, chain, residue name, atom name, xyz coordinates</span>
+<span class="sd">        and radius) for each atom.</span>
+<span class="sd">    residues : List[List[str]]</span>
+<span class="sd">        A list of solvent-exposed residues.</span>
+<span class="sd">    fn : Union[str, pathlib.Path], optional</span>
+<span class="sd">        A path to a PDB file, by default &quot;graph.pdb&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get atom information of solvent-exposed residues</span>
+    <span class="n">atomic</span> <span class="o">=</span> <span class="n">_get_atom_selection</span><span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;CA&quot;</span><span class="p">)</span>
+    <span class="n">atomic</span> <span class="o">=</span> <span class="n">atomic</span><span class="p">[(</span><span class="n">atomic</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">==</span> <span class="n">residues</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+
+    <span class="c1"># Write nodes to pdb</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">n_atom</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atomic</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">n_atom</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">):</span>
+                <span class="n">atomname</span> <span class="o">=</span> <span class="n">atom</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">resname</span> <span class="o">=</span> <span class="n">atom</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="n">chain</span> <span class="o">=</span> <span class="n">atom</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">resnum</span> <span class="o">=</span> <span class="n">atom</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%8.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">atom</span><span class="p">[</span><span class="mi">4</span><span class="p">])))</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%8.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">atom</span><span class="p">[</span><span class="mi">5</span><span class="p">])))</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%8.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">atom</span><span class="p">[</span><span class="mi">6</span><span class="p">])))</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;ATOM  </span><span class="si">{</span><span class="n">n_atom</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">5d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">atomname</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resname</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">chain</span><span class="si">}{</span><span class="n">resnum</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="n">x</span><span class="si">}{</span><span class="n">y</span><span class="si">}{</span><span class="n">z</span><span class="si">}</span><span class="s2">  1.00100.00</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CONECT</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="si">}{</span><span class="nb">str</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;END</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, João Victor da Silva Guerra.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
