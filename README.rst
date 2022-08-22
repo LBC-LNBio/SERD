@@ -14,6 +14,7 @@ SERD
 A Python package to detect solvent-exposed residues of a target biomolecule.
 
 * `GitHub repository <https://github.com/jvsguerra/SERD>`_
+* `Documentation and tutorial <https://jvsguerra.github.io/SERD/>>`_
 
 ************
 Installation
