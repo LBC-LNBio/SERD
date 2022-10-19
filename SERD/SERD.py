@@ -778,7 +778,7 @@ def r2g(
         If None, cutoff depends on selection argument. If "CA", cutoff is 10.0. If "CB", cutoff is 8.0.
     intraresidual : bool, optional
         Whether to consider intraresidual contacts to create adjacency matrix, by default False.
-    weighted_edges :
+    weighted_edges : bool, optional
         Whether to include the distances as weight of the edges.
 
     Returns
