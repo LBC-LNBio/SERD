@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SERD.SERD &mdash; SERD 0.1.1 documentation</title>
+  <title>SERD.SERD &mdash; SERD 0.1.2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/icon.ico"/>
@@ -874,8 +874,8 @@
 <span class="sd">        If None, cutoff depends on selection argument. If &quot;CA&quot;, cutoff is 10.0. If &quot;CB&quot;, cutoff is 8.0.</span>
 <span class="sd">    intraresidual : bool, optional</span>
 <span class="sd">        Whether to consider intraresidual contacts to create adjacency matrix, by default False.</span>
-<span class="sd">    weighted_edges : bool, False</span>
-<span class="sd">        Whether to include the interresidual distances as edge weights, by default False.</span>
+<span class="sd">    weighted_edges : bool, optional</span>
+<span class="sd">        Whether to include the distances as weight of the edges.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -926,6 +926,15 @@
     <span class="c1"># Create networkx.Graph</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">networkx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
     <span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">adjacency</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">weighted_edges</span><span class="p">:</span>
+        <span class="n">weighted_edges</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">distance</span><span class="p">[</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="k">for</span> <span class="n">edges</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">add_weighted_edges_from</span><span class="p">(</span><span class="n">weighted_edges</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">weighted_edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">edges</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">add_weighted_edges_from</span><span class="p">(</span><span class="n">weighted_edges</span><span class="p">)</span>
 
     <span class="c1"># Add interresidual distances as edge weights</span>
     <span class="k">if</span> <span class="n">weighted_edges</span><span class="p">:</span>

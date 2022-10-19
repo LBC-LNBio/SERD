@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SERD.detect &mdash; SERD 0.1.1 documentation</title>
+  <title>SERD.detect &mdash; SERD 0.1.2 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/icon.ico"/>
@@ -278,7 +278,7 @@ and radius) for each atom.</p></li>
 <li><p><strong>cutoff</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>]</em><em>, </em><em>optional</em>) – A limit of distance to define an edge between two solvent-exposed residues, by default None.
 If None, cutoff depends on selection argument. If “CA”, cutoff is 10.0. If “CB”, cutoff is 8.0.</p></li>
 <li><p><strong>intraresidual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to consider intraresidual contacts to create adjacency matrix, by default False.</p></li>
-<li><p><strong>weighted_edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>False</em>) – Whether to include the interresidual distances as edge weights, by default False.</p></li>
+<li><p><strong>weighted_edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to include the distances as weight of the edges.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
