@@ -833,6 +833,10 @@ def r2g(
     if weighted_edges:
         weighted_edges = [(edges[0],edges[1],distance[edges[0]][edges[1]]) for edges in G.edges(data=True)]
         G.add_weighted_edges_from(weighted_edges)
+    else:
+        weighted_edges = [(edges[0],edges[1],1.0) for edges in G.edges(data=True)]
+        G.add_weighted_edges_from(weighted_edges)
+
 
     return G
 
