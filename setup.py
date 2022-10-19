@@ -49,7 +49,7 @@ setup(
     # This field corresponds to the "Home-Page" metadata field:
     url="https://github.com/jvsguerra/SERD",
     # Authors information
-    author="João Victor da Silva Guerra",  # Optional
+    author="João Victor da Silva Guerra, Gabriel Ernesto Jara, José Geraldo de Carvalho Pereira",  # Optional
     author_email="jvsguerra@gmail.com",
     # Classifiers help users find your project by categorizing it.
     classifiers=[  # Optional
