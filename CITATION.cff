@@ -1,0 +1,53 @@
+cff-version: 0.1.2
+title: SERD
+message: >-
+  If you use SERD in your research,  please cite it as below.
+type: software
+authors:
+  - given-names: João Victor
+    family-names: Guerra
+    email: joao.guerra@lnbio.cnpem.br
+    affiliation: >-
+      Brazilian Center for Research in Energy and Materials
+      (CNPEM)
+    orcid: 'https://orcid.org/0000-0002-6800-4425'
+  - affiliation: >-
+      Brazilian Center for Research in Energy and Materials
+      (CNPEM)
+    given-names: Gabriel Ernesto
+    family-names: Jara
+    email: gabriel.jara@lnbio.cnpem.br
+  - given-names: José Geraldo de Carvalho
+    family-names: Pereira
+    email: jose.pereira@lnbio.cnpem.br
+    affiliation: >-
+      Brazilian Center for Research in Energy and Materials
+      (CNPEM)
+  - given-names: Paulo Sergio
+    family-names: Lopes-de-Oliveira
+    email: paulo.oliveira@lnbio.cnpem.br
+    affiliation: >-
+      Brazilian Center for Research in Energy and Materials
+      (CNPEM)
+repository-code: 'https://github.com/LBC-LNBio/SERD'
+url: 'https://lbc-lnbio.github.io/SERD/'
+abstract: >-
+  SERD is a Python package designed to identify 
+  solvent-exposed residues within a target biomolecule, 
+  making them accessible to potential ligands. Furthermore, 
+  SERD has the capability to depict biomolecular 
+  structures as graphs, encompassing various entities, 
+  including binding sites (e.g., cavities identified by 
+  the KVFinder suite) and biomolecular complexes (e.g., 
+  IPPs, IPLs, IPRs, and IPDs), taking into account their 
+  intramolecular interactions.
+keywords:
+  - structural-biology
+  - solvent-accessibility
+  - python-package
+  - graph-theory
+  - graph-representations
+license: GNU General Public License v3.0
+commit: e9ef6e1
+version: v0.1.2
+date-released: '2022-10-19'
