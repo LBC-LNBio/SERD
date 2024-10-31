@@ -1,0 +1,71 @@
+[build-system]
+requires = [
+    "setuptools>=74.1",
+    "wheel>=0.37.1",
+    "Cython>=0.29",
+    "numpy>=1.21.5",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "SERD"
+description = "A Python package to detect solvent-exposed residues of a target biomolecule."
+readme = { file = "README.rst", content-type = "text/x-rst" }
+requires-python = ">=3.10, <4"
+license = { file = "LICENSE" }
+authors = [
+    { name = "João V. S. Guerra", email = "jvsguerra@gmail.com" },
+    { name = "Gabriel E. Jara" },
+    { name = "José G. C. Pereira" },
+    { name = "Helder V. Ribeiro-Filho" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dependencies = [
+    "networkx~=3.4.2",
+    "numpy~=2.1.2",
+    "pyKVFinder~=0.7.1",
+    "scipy~=1.14.1",
+]
+dynamic = ["version"]
+keywords = [
+    "structural biology",
+    "proteins",
+    "biomolecular surface",
+    "solvent-exposed residues",
+]
+
+[project.urls]
+homepage = "https://github.com/jvsguerra/SERD"
+source = "https://github.com/jvsguerra/SERD/"
+issues = "https://github.com/jvsguerra/SERD/issues"
+
+[tool.setuptools]
+packages = ["SERD"]
+include-package-data = true
+py-modules = ["_SERD"]
+ext-modules = [
+    { name = "_SERD", sources = [
+        "C/SERD.i",
+        "C/SERD.c",
+    ], include-dirs = [
+        "/home/jvsguerra/.local/lib/python3.12/site-packages/numpy/core/include",
+        "C",
+    ], extra-compile-args = [
+        "-fopenmp",
+        "-Ofast",
+        "-lm",
+    ], extra-link-args = [
+        "-lgomp",
+    ] },
+]
