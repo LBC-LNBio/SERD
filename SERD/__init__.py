@@ -16,9 +16,4 @@ __name__ = "SERD"
 __version__ = "0.2.0"
 __license__ = "GNU GPL-3.0 License"
 
-try:
-    from .SERD import *
-except SyntaxError:
-    pass
-except ModuleNotFoundError:
-    pass
+from .SERD import *

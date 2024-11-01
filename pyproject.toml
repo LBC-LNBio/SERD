@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=74.1",
+    "setuptools>=62.0",
     "wheel>=0.37.1",
     "Cython>=0.29",
     "numpy>=1.21.5",
@@ -46,26 +46,14 @@ keywords = [
 ]
 
 [project.urls]
-homepage = "https://github.com/jvsguerra/SERD"
-source = "https://github.com/jvsguerra/SERD/"
-issues = "https://github.com/jvsguerra/SERD/issues"
+homepage = "https://github.com/LBC-LNBio/SERD"
+source = "https://github.com/LBC-LNBio/SERD/"
+issues = "https://github.com/LBC-LNBio/SERD/issues"
 
 [tool.setuptools]
 packages = ["SERD"]
 include-package-data = true
 py-modules = ["_SERD"]
-ext-modules = [
-    { name = "_SERD", sources = [
-        "C/SERD.i",
-        "C/SERD.c",
-    ], include-dirs = [
-        "/home/jvsguerra/.local/lib/python3.12/site-packages/numpy/core/include",
-        "C",
-    ], extra-compile-args = [
-        "-fopenmp",
-        "-Ofast",
-        "-lm",
-    ], extra-link-args = [
-        "-lgomp",
-    ] },
-]
+
+[tool.setuptools.dynamic]
+version = { attr = "SERD.__version__" }

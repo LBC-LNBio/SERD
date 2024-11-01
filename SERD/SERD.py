@@ -441,12 +441,8 @@ def interface(
             & (atominfo[:, 1] != "N")
             & (atominfo[:, 1] != "O")
         )
-        atominfo = atominfo[
-            mask[0],
-        ]
-        xyzr = xyzr[
-            mask[0],
-        ]
+        atominfo = atominfo[mask[0],]
+        xyzr = xyzr[mask[0],]
 
     # Prepare atominfo
     atominfo = atominfo[:, 0].tolist()
