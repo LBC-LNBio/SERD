@@ -118,7 +118,16 @@ class Structure(object):
         )
         self.surface = Surface(_surface, step, probe, vertices)
 
-    def calculate_atom_depth(self) -> pandas.DataFrame:
+    def _get_interface(self, ignore_backbone: bool = True) -> Dict[str, List[int]]:
+        return interface(
+            self.surface.grid,
+            self.atomic,
+            ignore_backbone=ignore_backbone,
+            step=self.surface.step,
+            probe=self.surface.probe,
+        )
+
+    def atom_depth(self) -> pandas.DataFrame:
         """
         Calculate the depth of each atom in the structure. The atom radius is subtracted from the minimum distance to the surface.
 
@@ -150,15 +159,75 @@ class Structure(object):
         atom_depth = distances.min(axis=0) - self.atomic[:, 7].astype(float)
 
         # Prepare data
-        data = numpy.c_[self.atomic[:, 0:4], atom_depth]
-
-        return pandas.DataFrame(
-            data, columns=["ResidueNumber", "Chain", "ResidueName", "AtomName", "AtomicDepth"], index=numpy.arange(1, len(data) + 1)
+        data = pandas.DataFrame(
+            self.atomic[:, 0:4],
+            columns=["ResidueNumber", "Chain", "ResidueName", "AtomName"],
         )
+        data["AtomicDepth"] = atom_depth
 
-    def get_interface(self):
-        return interface(self.surface)
+        return data
 
+    def residue_depth(
+        self,
+        metric: str = "minimum",
+        keep_only_interface: bool = False,
+        ignore_backbone: bool = True,
+    ) -> pandas.DataFrame:
+        """
+        Calculate the depth of each residue in the structure. The residue depth is calculated as the minimum or centroid of the atoms in the residue.
+
+        Parameters
+        ----------
+        metric : str, optional
+            The metric used to calculate the residue depth, either 'minimum', 'centroid', by default 'minimum'.
+        keep_only_interface : bool, optional
+            Whether to keep only residues at the interface, by default False.
+        ignore_backbone : bool, optional
+            Whether to ignore backbone atoms for defining the interface, by default True.
+
+        Returns
+        -------
+        pandas.DataFrame
+            A DataFrame containing the depth of each residue in the structure.
+        """
+        # Calculate atom depth
+        atom_depth = self.atom_depth()
+
+        # Keep only residues at the interface
+        if keep_only_interface:
+            interface_residues = pandas.DataFrame(
+                self._get_interface(ignore_backbone=ignore_backbone),
+                columns=["ResidueNumber", "Chain", "ResidueName"],
+            )
+
+            # Keep only the interface
+            atom_depth = pandas.merge(
+                atom_depth,
+                interface_residues,
+                on=["ResidueNumber", "Chain", "ResidueName"],
+                how="inner",
+            )
+
+        # Calculate residue depth
+        if metric == "minimum":
+            residue_depth = (
+                atom_depth.groupby(["ResidueNumber", "Chain"], sort=False)
+                .agg({"AtomicDepth": "min"})
+                .reset_index()
+            )
+        elif metric == "centroid":
+            residue_depth = (
+                atom_depth.groupby(["ResidueNumber", "Chain"], sort=False)
+                .agg({"AtomicDepth": "mean"})
+                .reset_index()
+            )
+        else:
+            raise ValueError("Invalid metric. Please use 'minimum' or 'centroid'.")
+
+        # Rename column for consistency
+        residue_depth.rename(columns={"AtomicDepth": "ResidueDepth"}, inplace=True)
+
+        return residue_depth
 
 
 if __name__ == "__main__":
@@ -166,8 +235,11 @@ if __name__ == "__main__":
     structure = Structure()
     structure.load("examples/1FMO.pdb")
     structure.model_surface(type="SES", step=0.6, probe=1.4)
-    atom_depth = structure.calculate_atom_depth()
-    print(atom_depth)
+    atom_depth = structure.atom_depth()
+    residue_depth = structure.residue_depth(
+        metric="minimum", keep_only_interface=True, ignore_backbone=True
+    )
+    print(residue_depth)
 
 # if __name__ == "__main__":
 #     import argparse
