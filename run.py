@@ -1,4 +1,3 @@
-# %%
 from SERD import read_vdw, read_pdb, get_vertices, surface, interface, _get_sincos
 import numpy
 import pandas
@@ -231,27 +230,67 @@ class Structure(object):
 
 
 if __name__ == "__main__":
+    import argparse
 
-    structure = Structure()
-    structure.load("examples/1FMO.pdb")
+    parser = argparse.ArgumentParser(description="SERD")
+    parser.add_argument("pdb", type=str, help="Path to PDB file")
+    parser.add_argument(
+        "--vdw", type=str, default=None, help="Path to VDW file (optional)"
+    )
+    parser.add_argument(
+        "--step", type=float, default=0.6, help="Step size for surface modeling"
+    )
+    parser.add_argument(
+        "--probe", type=float, default=1.4, help="Probe radius for surface modeling"
+    )
+    parser.add_argument(
+        "--type",
+        type=str,
+        default="SES",
+        choices=["SES", "SAS"],
+        help="Type of surface to model (SES or SAS)",
+    )
+    parser.add_argument(
+        "--keep_only_interface",
+        action="store_true",
+        help="Keep only residues at the interface",
+    )
+    parser.add_argument(
+        "--ignore_backbone",
+        action="store_true",
+        help="Ignore backbone atoms for defining the interface",
+    )
+    parser.add_argument(
+        "--metric",
+        type=str,
+        default="minimum",
+        choices=["minimum", "centroid"],
+        help="Metric used to calculate the residue depth",
+    )
+    parser.add_argument(
+        "--no-file", action="store_true", help="Do not write output to file"
+    )
+    args = parser.parse_args()
+
+    # Load structure
+    structure = Structure(vdw=args.vdw)
+    structure.load(args.pdb)
+
+    # Model surface
     structure.model_surface(type="SES", step=0.6, probe=1.4)
+
+    # Calculate atom depth
     atom_depth = structure.atom_depth()
+    if not args.no_file:
+        atom_depth.to_csv("atom_depth.csv")
+    print(atom_depth)
+
+    # Calculate residue depth
     residue_depth = structure.residue_depth(
-        metric="minimum", keep_only_interface=True, ignore_backbone=True
+        metric=args.metric,
+        keep_only_interface=args.keep_only_interface,
+        ignore_backbone=args.ignore_backbone,
     )
     print(residue_depth)
-
-# if __name__ == "__main__":
-#     import argparse
-#     parser = argparse.ArgumentParser(description="SERD")
-#     parser.add_argument("pdb", type=str, help="Path to PDB file")
-#     parser.add_argument("--vdw", type=str, default=None, help="Path to VDW file (optional)")
-#     args = parser.parse_args()
-#     print(args)
-
-#     structure = Structure(vdw=args.vdw)
-#     structure.load(args.pdb)
-#     structure.model_surface()
-#     print(structure.get_interface())
-
-# %%
+    if not args.no_file:
+        residue_depth.to_csv("residue_depth.csv")
