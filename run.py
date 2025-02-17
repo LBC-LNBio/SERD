@@ -109,7 +109,7 @@ class Structure(object):
             raise ValueError("No atomic data loaded. Please run .load() first.")
 
         # Calculate vertices of the bounding box
-        vertices = get_vertices(self.atomic)
+        vertices = get_vertices(self.atomic, probe=probe, step=step)
 
         # Model surface representation
         _surface = surface(
