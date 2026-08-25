@@ -62,3 +62,23 @@ py-modules = ["_SERD"]
 
 [tool.setuptools.dynamic]
 version = { attr = "SERD.__version__" }
+
+[tool.cibuildwheel]
+build = ["cp310-*", "cp311-*", "cp312-*", "cp313-*", "cp314-*"]
+test-skip = "*"
+
+[tool.cibuildwheel.linux]
+archs = ["native"]
+
+[tool.cibuildwheel.macos]
+before-build = [
+    "python3 -m pip install --upgrade pip",
+    "pip3 install certifi",
+    "git clean -fxd build",
+    "brew install llvm",
+    "brew install libomp",
+]
+archs = ["native"]
+
+[tool.cibuildwheel.windows]
+archs = ["native"]
