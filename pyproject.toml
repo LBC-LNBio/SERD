@@ -1,9 +1,12 @@
 [build-system]
 requires = [
-    "setuptools>=62.0",
-    "wheel>=0.37.1",
-    "Cython>=0.29",
-    "numpy>=1.21.5",
+    "setuptools>=77.0.3",
+    "wheel>=0.45",
+    "Cython>=3.0.8",
+    "swig>=4.4.1",
+    # NumPy is required at build time for wheel generation.
+    # Building against NumPy 2.x produces wheels compatible with NumPy 1.x at runtime.
+    "numpy>=2.0.0",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -34,10 +37,10 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
 ]
 dependencies = [
-    "networkx~=3.4.2",
-    "numpy~=2.1.2",
-    "pyKVFinder~=0.7.1",
-    "scipy~=1.14.1",
+    "networkx>=3.4.0,<3.7.0",
+    "numpy>=2.0.0,<2.5.0",
+    "pyKVFinder>=0.9.0,<0.10.0",
+    "scipy>=1.14.0,<1.19.0",
 ]
 dynamic = ["version"]
 keywords = [
