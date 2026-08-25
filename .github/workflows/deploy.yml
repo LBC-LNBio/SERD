@@ -24,7 +24,7 @@ jobs:
         run: |
           pip install dist/*.tar.gz
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: artifacts
           path: dist/*.tar.gz
@@ -33,27 +33,53 @@ jobs:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        # macos-13 is an intel runner, macos-14 is apple silicon
-        os: [macos-latest, macos-13, ubuntu-latest, windows-latest]
+        # macos-15: arm64, macos-15-intel: x64, macos-26: arm64+intel
+        os: [macos-15, macos-15-intel, macos-26, ubuntu-latest, windows-latest]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+      
+      # Enable QEMU emulation for ARM
+      - name: Set up QEMU
+        if: matrix.os == 'ubuntu-latest'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
 
       # Used to host cibuildwheel
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
 
+      - name: Set environment variable for macos-26 (arm64)
+        if: matrix.os == 'macos-26'
+        run: | 
+          echo "MACOSX_DEPLOYMENT_TARGET=26.0" >> $GITHUB_ENV
+          echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
+
+      - name: Set environment variable for macos-15 (arm64)
+        if: matrix.os == 'macos-15'
+        run: | 
+          echo "MACOSX_DEPLOYMENT_TARGET=15.0" >> $GITHUB_ENV
+          echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
+
+      - name: Set environment variable for macos-15-intel (intel)
+        if: matrix.os == 'macos-15-intel'
+        run: | 
+          echo "MACOSX_DEPLOYMENT_TARGET=15.0" >> $GITHUB_ENV
+          echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
+
       - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.19.2
+        run: python -m pip install cibuildwheel==3.3.0
 
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: artifacts
+          name: artifacts-${{ matrix.os }}
           path: ./wheelhouse/*.whl
 
   pypi-publish:
@@ -62,7 +88,7 @@ jobs:
     needs: [build_sdist, build_wheels]
     environment:
       name: pypi
-      url: https://pypi.org/p/SERD/
+      url: https://pypi.org/p/SERD
     permissions:
       id-token: write
 
@@ -71,10 +97,11 @@ jobs:
         with:
           python-version: 3.x
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: artifacts
           path: ./dist
+          pattern: artifacts-*
+          merge-multiple: true
 
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
