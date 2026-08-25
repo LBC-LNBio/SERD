@@ -13,7 +13,7 @@ See also
 """
 
 __name__ = "SERD"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __license__ = "GNU GPL-3.0 License"
 
 from .SERD import *
