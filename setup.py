@@ -15,6 +15,7 @@ setup(
             name="_SERD",
             sources=["C/SERD.i", "C/SERD.c"],
             include_dirs=[get_numpy_include(), "C"],
+            swig_opts=["-IC"],
             extra_compile_args=["-fopenmp", "-Ofast", "-lm"],
             extra_link_args=(
                 ["-lgomp", "-static"] if sys.platform != "linux" else ["-lgomp"]

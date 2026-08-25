@@ -1,0 +1,3 @@
+include C/*.c
+include C/*.h
+include C/*.i
