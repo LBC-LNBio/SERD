@@ -53,6 +53,10 @@ jobs:
         with:
           python-version: 3.x
 
+      - name: Install LLVM on macOS
+        if: startsWith(matrix.os, 'macos-')
+        run: brew install llvm
+
       - name: Set environment variable for macos-26 (arm64)
         if: matrix.os == 'macos-26'
         run: | 
