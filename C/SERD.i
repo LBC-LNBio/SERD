@@ -8,7 +8,7 @@
 %include "numpy.i"
 
 %init %{
-    import_array();
+    import_array1(-1);
 %}
 
 /* Solvent-exposed surface grid */
